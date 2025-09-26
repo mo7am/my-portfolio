@@ -1,0 +1,15 @@
+<svg width="480" height="360" viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#7c9cff"/>
+      <stop offset="100%" stop-color="#52e0a5"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="#0b0f17"/>
+  <circle cx="150" cy="160" r="80" fill="url(#g)" opacity="0.25"/>
+  <rect x="220" y="90" width="200" height="160" rx="16" fill="#121826" stroke="rgba(255,255,255,0.08)"/>
+  <circle cx="320" cy="140" r="26" fill="#182236"/>
+  <rect x="260" y="190" width="120" height="12" rx="6" fill="#182236"/>
+  <rect x="240" y="210" width="160" height="12" rx="6" fill="#182236"/>
+  <text x="40" y="300" font-size="18" fill="#aab1c3" font-family="Inter, Arial, sans-serif">Mohamed Salah — Full-Stack Developer</text>
+</svg>
