@@ -45,12 +45,14 @@ class ResumeController extends Controller
         $media = $user->getFirstMedia('logo');
 
         if ($media) {
-            $logoPath = $media->getPath();
+            $logoUrl = $media->getUrl();
         } else {
-            $logoPath = public_path('logos/logo.png');
+            $logoUrl = public_path('logos/logo.png');
         }
-        $logoData = base64_encode(file_get_contents($logoPath));
-        $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
+        
+        $logoData = base64_encode(file_get_contents($logoUrl));
+        $logoType = pathinfo(parse_url($logoUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
+
         $experiences = $this->experienceLibrary->all(orderBy: ['id' => 'desc']);
         $educationals = $this->educationalLibrary->all();
         $languages = $this->languageLibrary->all();
@@ -68,6 +70,6 @@ class ResumeController extends Controller
                 'isPhpEnabled' => true,
             ]);
 
-        return $pdfContent->stream($user->first_name . '-' . $user->second_name . '-' . $user->third_name . '-Resume.pdf' );
+        return $pdfContent->download($user->first_name . '-' . $user->second_name . '-' . $user->third_name . '-Resume.pdf' );
     }
 }

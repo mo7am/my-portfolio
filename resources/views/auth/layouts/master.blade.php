@@ -41,7 +41,7 @@
             <!-- Logo -->
             <div class="app-brand mb-4">
               <a href="index.html" class="app-brand-link gap-2">
-                <span class="app-brand-logo demo">
+                <span class="app-brand-logo demo" style="height: 50px !important;">
                   <img style="width: 45px;height: 50px;" src="{{ asset('assets/logo/logo.png') }}" alt="Logo" width="25">
                 </span>
                 <h3 class="mb-1">Welcome to Portfolio! 👋</h3>

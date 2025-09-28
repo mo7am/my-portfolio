@@ -6,8 +6,11 @@
     </div>
 
     <!-- Session Status -->
-    <x-auth-session-status class="mb-4 custom-success" :status="session('status')" />
-
+    @if (session('status'))
+        <div class="mb-4 custom-success">
+            {{ session('status') }}
+        </div>
+    @endif
     <form method="POST" action="{{ route('password.email') }}">
         @csrf
 

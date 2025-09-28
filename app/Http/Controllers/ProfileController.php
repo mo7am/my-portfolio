@@ -62,7 +62,7 @@ class ProfileController extends Controller
     {
         $user = $this->userLibrary->save($request->except('logo'), auth('sanctum')->user());
         if ($request->hasFile('logo')) {
-            $user->addMediaFromRequest('logo')->toMediaCollection('logo');
+            $user->addMediaFromRequest('logo')->toMediaCollection('logo', 'users');
             $user->load('media');
         }
         return redirect()->back()->with('success', 'Your informations updated successfully');
@@ -72,7 +72,7 @@ class ProfileController extends Controller
     {
         $user = $this->userLibrary->save($request->except('logo'), auth('sanctum')->user());
         if ($request->hasFile('logo')) {
-            $user->addMediaFromRequest('logo')->toMediaCollection('logo');
+            $user->addMediaFromRequest('logo')->toMediaCollection('logo', 'users');
             $user->load('media');
         }
         return redirect()->back()->with('success', 'Your informations updated successfully');

@@ -75,7 +75,7 @@
               <div class="d-flex">
                 <div class="flex-shrink-0 me-3">
                   <div class="avatar avatar-online">
-                    <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="h-auto rounded-circle" />
+                    <img src="{{ auth('sanctum')->user()->getFirstMediaUrl('logo') }}" style="object-fit: contain;height: 100% !important;" alt class="h-auto rounded-circle" />
                   </div>
                 </div>
                 <div class="flex-grow-1">
