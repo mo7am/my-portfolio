@@ -9,7 +9,7 @@
     <div class="info-wrapper">
       <div class="info-text">
         <h2>Personal Information</h2>
-        <p><b>Name:</b> {{ $user->name }}</p>
+        <p><b>Name:</b> {{ ucwords($user->name) }}</p>
         <p><b>Email:</b> 
           <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ $user->email }}" target="_blank" rel="noopener">
             {{ $user->email }}
@@ -37,7 +37,7 @@
       </div>
   
       <div class="info-photo">
-        <img class="square-image" src="{{ $user->getFirstMediaUrl('logo') }}" alt="{{ $user->name }}">
+        <img class="square-image" src="{{ $user->getFirstMediaUrl('logo') }}" alt="{{ ucwords($user->name) }}">
       </div>
     </div>
   </section>

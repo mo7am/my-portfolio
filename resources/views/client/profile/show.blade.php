@@ -23,11 +23,11 @@
             <div
               class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
               <div class="user-profile-info">
-                <h4>{{ $user->name }}</h4>
+                <h4>{{ ucwords($user->name) }}</h4>
                 <ul
                   class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
                   <li class="list-inline-item d-flex gap-1">
-                    <i class="ti ti-color-swatch"></i> {{ $user->type }}
+                    <i class="ti ti-color-swatch"></i> {{ ucwords($user->type) }}
                   </li>
                   <li class="list-inline-item d-flex gap-1"><i class="ti ti-map-pin"></i> {{ $user->address }}</li>
                   <li class="list-inline-item d-flex gap-1">
@@ -256,11 +256,11 @@
                   <label class="form-label" for="select2Basic">Marital Status</label>
                   <select name="marital_status" id="select2Basic" 
                           class="select2 form-select form-select-lg @error('marital_status') is-invalid @enderror" data-allow-clear="true">
-                      <option value="Married" {{ old('marital_status', $user->marital_status) == 'Married' ? 'selected' : '' }}>
-                          Married
-                      </option>
                       <option value="Single" {{ old('marital_status', $user->marital_status) == 'Single' ? 'selected' : '' }}>
                           Single
+                      </option>
+                      <option value="Married" {{ old('marital_status', $user->marital_status) == 'Married' ? 'selected' : '' }}>
+                        Married
                       </option>
                   </select>
                   @error('marital_status')
@@ -280,8 +280,12 @@
             <div class="card-body">
                 <div class="row">
                   <div class="mb-3 col-md-12">
-                    <label for="domain" class="form-label">Domain</label>
-                    <input class="form-control @error('domain') is-invalid @enderror" type="text" id="domain" name="domain" value="{{ old('domain', $user->domain) }}" placeholder="Enter domain" />
+                    <label for="domain" class="form-label">Portfolio Url</label>
+                    <div class="input-group input-group-merge">
+                      <span class="input-group-text" style="@error('domain') border-color: #dc3545; @enderror">{{ config('app.url') }}/</span>
+                      <input type="text" id="basic-icon-default-email" class="form-control @error('domain') is-invalid @enderror" type="text" id="domain" name="domain" value="{{ old('domain', $user->domain) }}" placeholder="Enter domain" style="margin-left: -10px !important;">
+                    </div>
+
                       @error('domain')
                           <div class="invalid-feedback text-sm">{{ $message }}</div>
                       @enderror

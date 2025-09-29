@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
                     'password' => Hash::make($request->password),
                     'type' => UserType::CLIENT->value,
                     'tenant_id' => $tenant->id,
-                    'domain' => $request->first_name . '-' . $request->second_name.'-'.$tenant->id,
+                    'domain' => strtolower($request->first_name) . '-' . strtolower($request->second_name).'-'.$tenant->id,
                 ]
             ));
 

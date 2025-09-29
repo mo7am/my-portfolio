@@ -13,7 +13,6 @@
       height: 100%; 
     }
 
-    /* البوردر الخارجي والداخلي */
     .outer-border {
       border: 6px solid #000;
       padding: 6px;
@@ -40,7 +39,6 @@
       padding-bottom: 5px;
     }
 
-    /* استخدام جدول للرأس */
     .header-table {
       width: 100%;
       margin: 20px 0;
@@ -66,16 +64,16 @@
     }
 
     .header-right img {
-  width: 180px;
-  height: 165px;
-  object-fit: cover;
-  margin-top: -10px;
+      width: 180px;
+      height: 165px;
+      object-fit: cover;
+      margin-top: -10px;
 
-  border: 2px solid #555;     /* أخف من الأسود */
-  border-radius: 10px;        /* يخلي الأطراف ناعمة */
-  padding: 3px;               /* يخليها شبه card */
-  background: #f9f9f9;        /* يدي إحساس بالظل */
-}
+      border: 2px solid #555;
+      border-radius: 10px;
+      padding: 3px;
+      background: #f9f9f9;
+    }
 
     .two-col {
       width: 100%;
@@ -106,8 +104,8 @@
 
       <!-- CV Title -->
       <h1 style="font-size: 30px">CV</h1>
-      <h2 style="text-align:center; border:0; margin-top:5px;text-decoration: underline;font-size:23px">Mohamed Salah Amin</h2>
-      <h4 style="text-align:center; border:0;font-size:16px; margin-top:-20px">{{ $user->job_title }}</h2>
+      <h2 style="text-align:center; border:0; margin-top:5px;text-decoration: underline;font-size:23px">{{ ucwords($user->name) }}</h2>
+      <h4 style="text-align:center; border:0;font-size:16px; margin-top:-20px">{{ ucwords($user->job_title) }}</h2>
 
       <!-- Personal Info + Image -->
       <table class="header-table">

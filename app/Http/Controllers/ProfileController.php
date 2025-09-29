@@ -60,7 +60,8 @@ class ProfileController extends Controller
 
     public function updateClientProfile(ClientRequest $request)
     {
-        $user = $this->userLibrary->save($request->except('logo'), auth('sanctum')->user());
+        $domain = strtolower($request->domain);
+        $user = $this->userLibrary->save(array_merge($request->except('logo', 'domain'), ['domain' => $domain]), auth('sanctum')->user());
         if ($request->hasFile('logo')) {
             $user->addMediaFromRequest('logo')->toMediaCollection('logo', 'users');
             $user->load('media');
