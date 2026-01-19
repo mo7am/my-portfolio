@@ -17,8 +17,14 @@ class ProjectRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $tags = json_decode($this->tags, true);
+
         $this->merge([
-            'tags' => json_decode($this->tags, true) ?: []
+            'tags' => collect($tags)
+                ->pluck('value')
+                ->filter()
+                ->values()
+                ->toArray()
         ]);
     }
 
@@ -35,7 +41,7 @@ class ProjectRequest extends FormRequest
             'description' => ['required', 'string', 'max:255'],
             'date' => ['required', 'date'],
             'tags' => ['sometimes', 'nullable', 'array'],
-            'tags.*.value' => 'required|string',
+            'tags.*' => ['required', 'string', 'max:50'],
             'source_code' => ['required', 'string', 'url', 'max:255'],
             'website_url' => ['sometimes', 'nullable', 'string', 'url', 'max:255'],
             'other' => ['sometimes', 'nullable', 'string', 'max:255'],
