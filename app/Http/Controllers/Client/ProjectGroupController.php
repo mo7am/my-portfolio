@@ -7,6 +7,7 @@ use App\Http\Requests\ProjectGroupRequest;
 use App\Libraries\ProjectGroupLibrary;
 use App\Models\ProjectWork;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class ProjectGroupController extends Controller
@@ -19,73 +20,80 @@ class ProjectGroupController extends Controller
     {
         if ($request->ajax()) {
             $data = $this->projectGroupLibrary->all(withoutGet: true);
+
             return DataTables::eloquent($data)
                 ->rawColumns([])
                 ->toJson();
         }
+
         return view('client.project-groups.index');
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
-        $projectGroup = new ProjectWork();
+        $projectGroup = new ProjectWork;
+
         return view('client.project-groups.create', compact('projectGroup'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function store(ProjectGroupRequest $request)
     {
         $this->projectGroupLibrary->save($request->validated());
-        return redirect()->route('clients.project-groups.index')->with('success', 'Project group created successfully');
+
+        return redirect()->route('clients.project-groups.index')->with('success', __('messages.created', ['item' => __('dashboard.project_group')]));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
         $projectGroup = $this->projectGroupLibrary->getByID($id);
+
         return view('client.project-groups.edit', compact('projectGroup'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(ProjectGroupRequest $request, $id)
     {
         $this->projectGroupLibrary->save($request->validated(), $this->projectGroupLibrary->getByID($id));
-        return redirect()->route('clients.project-groups.index')->with('success', 'Project group updated successfully');
+
+        return redirect()->route('clients.project-groups.index')->with('success', __('messages.updated', ['item' => __('dashboard.project_group')]));
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
         $this->projectGroupLibrary->deleteByID($id);
+
         return response()->json([
             'status' => true,
-            'message' => 'Project group deleted successfully'
+            'message' => __('messages.deleted', ['item' => __('dashboard.project_group')]),
         ]);
     }
 }

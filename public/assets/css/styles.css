@@ -1577,3 +1577,52 @@ textarea:focus-visible {
     scroll-behavior: auto;
   }
 }
+
+
+/* ---- RTL (Arabic) ---- */
+[dir="rtl"] body {
+  font-family: "Tajawal", var(--font-body);
+}
+[dir="rtl"] .hero {
+  direction: rtl;
+}
+[dir="rtl"] .hero-text,
+[dir="rtl"] .page-header,
+[dir="rtl"] .home-section-title,
+[dir="rtl"] .resume-section,
+[dir="rtl"] .project,
+[dir="rtl"] .contact-layout {
+  text-align: right;
+}
+[dir="rtl"] .hero-text .subtitle,
+[dir="rtl"] .cta,
+[dir="rtl"] .hero-stats {
+  justify-content: flex-start;
+}
+@media (max-width: 900px) {
+  [dir="rtl"] .hero-text .subtitle,
+  [dir="rtl"] .cta,
+  [dir="rtl"] .hero-stats {
+    justify-content: center;
+  }
+  [dir="rtl"] .hero-text,
+  [dir="rtl"] .page-header {
+    text-align: center;
+  }
+}
+[dir="rtl"] .timeline::before { left: auto; right: 0.35rem; }
+[dir="rtl"] .timeline li { padding-left: 0; padding-right: 1.75rem; }
+[dir="rtl"] .timeline li::before { left: auto; right: 0; }
+[dir="rtl"] .nav {
+  right: auto;
+  left: 0;
+  border-left: none;
+  border-right: 1px solid var(--border);
+  transform: translateX(-105%);
+}
+[dir="rtl"] .nav.show { transform: translateX(0); }
+[dir="rtl"] .section-label { flex-direction: row-reverse; }
+[dir="rtl"] .info-row { direction: rtl; }
+[dir="rtl"] .brand { direction: rtl; }
+[dir="rtl"] .site-footer { direction: rtl; }
+[dir="rtl"] .link { flex-direction: row-reverse; }

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Libraries\ExperienceLibrary;
-use App\Libraries\EducationalLibrary;
-use App\Libraries\LanguageLibrary;
-use App\Libraries\SkillLibrary;
 use App\Http\Controllers\Controller;
+use App\Libraries\EducationalLibrary;
+use App\Libraries\ExperienceLibrary;
+use App\Libraries\LanguageLibrary;
 use App\Libraries\LinkLibrary;
 use App\Libraries\ProjectGroupLibrary;
 use App\Libraries\ProjectLibrary;
+use App\Libraries\SkillLibrary;
 use App\Libraries\WebsiteLibrary;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
-use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -41,9 +41,10 @@ class HomeController extends Controller
 
         if ($request->ajax()) {
             $data = $this->projectLibrary->all(withoutGet: true);
+
             return DataTables::eloquent($data)
                 ->addColumn('date', function ($data) {
-                    return Carbon::parse($data->start_date)->format('m/d/Y');
+                    return $data->date ? Carbon::parse($data->date)->format('m/d/Y') : '';
                 })
                 ->addColumn('project_group', function ($data) {
                     return $data->projectWork?->project_work;
@@ -54,21 +55,21 @@ class HomeController extends Controller
                 })
                 ->filterColumn('project_group', function ($query, $keyword) {
                     $query->whereHas('projectWork', function ($q) use ($keyword) {
-                        return $q->whereRaw("project_works.project_work like ?", ["%{$keyword}%"]);
+                        return $q->whereRaw('project_works.project_work like ?', ["%{$keyword}%"]);
                     });
                 })
-                
+
                 ->orderColumn('date', function ($query, $order) {
                     $query->orderBy('date', $order);
                 })
                 ->orderColumn('project_group', function ($query, $order) {
                     $query->orderBy('project_work_id', $order);
                 })
-                
+
                 ->rawColumns(['start_date', 'end_date', 'project_group'])
                 ->toJson();
         }
-        
+
         return view('client.dashboard', compact('project_count', 'experience_count', 'educational_count', 'language_count', 'skill_count', 'link_count', 'website_count', 'project_group_count'));
     }
 }

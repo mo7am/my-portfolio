@@ -23,7 +23,8 @@ $(function () {
     select2.each(function () {
       var $this = $(this);
       $this.wrap('<div class="position-relative"></div>').select2({
-        placeholder: 'Select value',
+        placeholder: $this.data('placeholder') || 'Select value',
+        allowClear: $this.data('allow-clear') === true || $this.data('allow-clear') === 'true',
         dropdownParent: $this.parent()
       });
     });

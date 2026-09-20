@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'failed' => 'These credentials do not match our records.',
+    'password' => 'The provided password is incorrect.',
+    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'login' => 'Login',
+    'register' => 'Register',
+    'email' => 'Email',
+    'password_label' => 'Password',
+    'remember' => 'Remember me',
+    'forgot' => 'Forgot password?',
+    'sign_in_title' => 'Please sign in to your portfolio and start your journey',
+    'sign_up_title' => 'Create your account and build a professional CV',
+    'name' => 'First name',
+    'second_name' => 'Second name',
+    'confirm_password' => 'Confirm password',
+    'already_registered' => 'Already have an account?',
+    'reset_password' => 'Reset password',
+    'send_reset_link' => 'Email password reset link',
+    'forgot_intro' => 'Enter your email and we will send a reset link.',
+    'welcome' => 'Welcome to Portfolio!',
+    'sign_in' => 'Sign in',
+    'sign_up' => 'Sign up',
+    'or' => 'or',
+];

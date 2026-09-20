@@ -2,20 +2,34 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Arr;
-use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, BelongsToTenant, HasApiTokens, InteractsWithMedia;
+    use BelongsToTenant, HasApiTokens, HasFactory, HasTranslations, InteractsWithMedia, Notifiable;
+
+    /**
+     * @var list<string>
+     */
+    public array $translatable = [
+        'first_name',
+        'second_name',
+        'third_name',
+        'address',
+        'nationality',
+        'objective',
+        'job_title',
+        'job_description',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -70,7 +84,7 @@ class User extends Authenticatable implements HasMedia
     {
         $this->addMediaCollection('logo')
             ->singleFile()
-            ->useFallbackUrl(config('app.url') . '/logos/logo.png')
+            ->useFallbackUrl(config('app.url').'/logos/logo.png')
             ->useFallbackPath(public_path('logos/logo.png'))
             ->useDisk('users');
     }
@@ -78,7 +92,11 @@ class User extends Authenticatable implements HasMedia
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value = null, array $attributes = []) => sprintf('%s %s %s', Arr::get($attributes, 'first_name'), Arr::get($attributes, 'second_name'), Arr::get($attributes, 'third_name'))
+            get: fn () => trim(implode(' ', array_filter([
+                $this->first_name,
+                $this->second_name,
+                $this->third_name,
+            ])))
         );
     }
 

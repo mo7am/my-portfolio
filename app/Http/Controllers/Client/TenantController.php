@@ -15,12 +15,14 @@ class TenantController extends Controller
     public function show()
     {
         $tenant = auth('sanctum')->user()->tenant;
+
         return view('client.settings.show', compact('tenant'));
     }
 
     public function update(TenantRequest $request)
     {
         $this->tenantLibrary->store($request->validated(), auth('sanctum')->user()->tenant->id);
-        return redirect()->back()->with('success', 'Settings updated successfully');
+
+        return redirect()->back()->with('success', __('messages.settings_updated'));
     }
 }

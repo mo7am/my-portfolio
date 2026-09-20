@@ -2,29 +2,39 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Experience extends Model
 {
-    use BelongsToTenant;
-    
-     /**
-     * The attributes that are mass assignable.
-     *
+    use BelongsToTenant, HasTranslations;
+
+    /**
+     * @var list<string>
+     */
+    public array $translatable = [
+        'title',
+        'company',
+        'location',
+        'description',
+    ];
+
+    /**
      * @var list<string>
      */
     protected $fillable = [
         'tenant_id',
         'title',
+        'company',
+        'location',
+        'employment_type',
         'description',
         'start_date',
         'end_date',
     ];
 
-     /**
-     * Get the attributes that should be cast.
-     *
+    /**
      * @return array<string, string>
      */
     protected function casts(): array

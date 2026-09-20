@@ -7,9 +7,6 @@ use Illuminate\Validation\Rule;
 
 class ProjectRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
@@ -18,33 +15,40 @@ class ProjectRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $tags = json_decode($this->tags, true);
+        $payload = [];
 
-        $this->merge([
-            'tags' => collect($tags)
-                ->pluck('value')
-                ->filter()
-                ->values()
-                ->toArray()
-        ]);
+        if (is_array($tags)) {
+            $payload['tags'] = collect($tags)->pluck('value')->filter()->values()->toArray();
+        }
+
+        if ($this->input('project_work_id') === '' || $this->input('project_work_id') === null) {
+            $payload['project_work_id'] = null;
+        }
+
+        if ($payload !== []) {
+            $this->merge($payload);
+        }
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            'project_work_id' => ['required', 'numeric', Rule::exists('project_works', 'id')->where('tenant_id', tenant()?->getTenantKey())],
+            'project_work_id' => ['nullable', 'numeric', Rule::exists('project_works', 'id')->where('tenant_id', tenant()?->getTenantKey())],
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
+            'role' => ['nullable', 'string', 'max:255'],
+            'type' => ['nullable', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:2000'],
             'date' => ['required', 'date'],
             'tags' => ['sometimes', 'nullable', 'array'],
             'tags.*' => ['required', 'string', 'max:50'],
-            'source_code' => ['required', 'string', 'url', 'max:255'],
-            'website_url' => ['sometimes', 'nullable', 'string', 'url', 'max:255'],
-            'other' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'source_code' => ['nullable', 'string', 'url', 'max:255'],
+            'website_url' => ['nullable', 'string', 'url', 'max:255'],
+            'other' => ['nullable', 'string', 'max:255'],
         ];
+    }
+
+    public function attributes(): array
+    {
+        return trans('validation.attributes');
     }
 }

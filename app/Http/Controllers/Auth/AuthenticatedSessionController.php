@@ -30,9 +30,9 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         if (auth('sanctum')->user()->type == UserType::ADMIN->value) {
-            return redirect()->intended(route('admins.index'))->with('success', 'Signed in successfully');
+            return redirect()->intended(route('admins.index'))->with('success', __('messages.login_success'));
         } else {
-            return redirect()->intended(route('clients.index'))->with('success', 'Signed in successfully');
+            return redirect()->intended(route('clients.index'))->with('success', __('messages.login_success'));
         }
     }
 

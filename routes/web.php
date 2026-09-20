@@ -1,35 +1,47 @@
 <?php
 
+use App\Enums\UserType;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Client\AwardController;
+use App\Http\Controllers\Client\CertificationController;
+use App\Http\Controllers\Client\CourseController;
+use App\Http\Controllers\Client\CvReferenceController;
 use App\Http\Controllers\Client\EducationalController;
 use App\Http\Controllers\Client\ExperienceController;
 use App\Http\Controllers\Client\HomeController as ClientHomeController;
 use App\Http\Controllers\Client\LanguageController;
 use App\Http\Controllers\Client\LinkController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Client\ProjectController;
 use App\Http\Controllers\Client\ProjectGroupController;
 use App\Http\Controllers\Client\SkillController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Resume\ResumeController;
-use App\Http\Controllers\Client\ProjectController;
 use App\Http\Controllers\Client\TenantController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Client\VolunteeringController;
 use App\Http\Controllers\Client\WebsiteController;
+use App\Http\Controllers\ContentLocaleController;
+use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Resume\ContactController;
 use App\Http\Controllers\Resume\HomeController;
+use App\Http\Controllers\Resume\ResumeController;
 use App\Http\Middleware\AttachTenantHeader;
 use App\Http\Middleware\InitializeTenancyMiddleware;
+use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/auth.php';
 
+Route::get('/locale/{locale}', LocaleController::class)->name('locale.switch');
+Route::get('/content-locale/{locale}', ContentLocaleController::class)->name('content-locale.switch');
+
 Route::get('/', function () {
     if (auth('sanctum')->check()) {
-        if (auth('sanctum')->user()->type === \App\Enums\UserType::ADMIN->value) {
+        if (auth('sanctum')->user()->type === UserType::ADMIN->value) {
             return redirect()->route('admins.index');
-        } else if (auth('sanctum')->user()->type === \App\Enums\UserType::CLIENT->value) {
+        } elseif (auth('sanctum')->user()->type === UserType::CLIENT->value) {
             return redirect()->route('clients.index');
         }
     }
+
     return redirect()->route('login');
 });
 
@@ -45,7 +57,6 @@ Route::middleware(['auth:sanctum', AttachTenantHeader::class])->group(function (
 
         Route::resource('users', UserController::class)->except(['show']);
 
-        
     });
 
     Route::middleware('client', InitializeTenancyMiddleware::class)->prefix('client')->as('clients.')->group(function () {
@@ -62,7 +73,7 @@ Route::middleware(['auth:sanctum', AttachTenantHeader::class])->group(function (
         Route::resource('experiences', ExperienceController::class)->except(['show']);
 
         Route::resource('languages', LanguageController::class)->except(['show']);
-        
+
         Route::resource('skills', SkillController::class)->except(['show']);
 
         Route::resource('project-groups', ProjectGroupController::class)->except(['show']);
@@ -77,6 +88,11 @@ Route::middleware(['auth:sanctum', AttachTenantHeader::class])->group(function (
         });
 
         Route::resource('websites', WebsiteController::class)->except(['show']);
+        Route::resource('certifications', CertificationController::class)->except(['show']);
+        Route::resource('courses', CourseController::class)->except(['show']);
+        Route::resource('awards', AwardController::class)->except(['show']);
+        Route::resource('volunteerings', VolunteeringController::class)->except(['show']);
+        Route::resource('references', CvReferenceController::class)->except(['show']);
     });
 });
 

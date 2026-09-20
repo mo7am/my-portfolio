@@ -20,19 +20,42 @@
     <!-- /Search -->
 
     <ul class="navbar-nav flex-row align-items-center ms-auto">
+      @if(auth('sanctum')->check() && auth('sanctum')->user()?->type === \App\Enums\UserType::CLIENT->value)
+        <li class="nav-item dropdown me-2 me-xl-0">
+          <a class="nav-link dropdown-toggle hide-arrow d-flex align-items-center gap-1" href="javascript:void(0);" data-bs-toggle="dropdown">
+            <i class="ti ti-file-text rounded-circle ti-md"></i>
+            <span class="d-none d-md-inline small">{{ __('app.cv_language') }}: {{ content_locale_label() }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li class="dropdown-header">{{ __('app.cv_language') }}</li>
+            @foreach(\App\Support\ContentLocale::supported() as $code)
+              <li>
+                <a class="dropdown-item {{ content_locale() === $code ? 'active' : '' }}" href="{{ route('content-locale.switch', $code) }}">
+                  <span class="align-middle">{{ \App\Support\ContentLocale::label($code) }}</span>
+                </a>
+              </li>
+            @endforeach
+            <li><hr class="dropdown-divider"></li>
+            <li class="px-3 pb-2">
+              <small class="text-muted">{{ __('app.cv_language_hint') }}</small>
+            </li>
+          </ul>
+        </li>
+      @endif
       <li class="nav-item dropdown-language dropdown me-2 me-xl-0">
-        <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+        <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" title="{{ __('app.system_language') }}">
           <i class="ti ti-language rounded-circle ti-md"></i>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
+          <li class="dropdown-header">{{ __('app.system_language') }}</li>
           <li>
-            <a class="dropdown-item" href="javascript:void(0);" data-language="en" data-text-direction="ltr">
-              <span class="align-middle">English</span>
+            <a class="dropdown-item {{ app()->getLocale()==='en' ? 'active' : '' }}" href="{{ route('locale.switch', 'en') }}">
+              <span class="align-middle">{{ __('app.english') }}</span>
             </a>
           </li>
           <li>
-            <a class="dropdown-item" href="javascript:void(0);" data-language="ar" data-text-direction="rtl">
-              <span class="align-middle">Arabic</span>
+            <a class="dropdown-item {{ app()->getLocale()==='ar' ? 'active' : '' }}" href="{{ route('locale.switch', 'ar') }}">
+              <span class="align-middle">{{ __('app.arabic') }}</span>
             </a>
           </li>
         </ul>

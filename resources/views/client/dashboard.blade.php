@@ -1,9 +1,9 @@
 @extends('layout.master')
-@section('title','Dashboard')
+@section('title', __('app.dashboard'))
 @section('content')
 
-<!-- Website Analytics -->
 <div class="container-xxl flex-grow-1 container-p-y">
+  @include('partials.page-intro', ['title' => __('app.dashboard'), 'description' => __('dashboard.intros.dashboard')])
   <div class="row">
     <div class="col-lg-6 mb-4">
       <div
@@ -13,22 +13,22 @@
           <div class="swiper-slide">
             <div class="row">
               <div class="col-12">
-                <h5 class="text-white mb-0 mt-2">Website Analytics</h5>
-                <small>Total {{ $project_count + $experience_count + $educational_count + $project_group_count }}</small>
+                <h5 class="text-white mb-0 mt-2">{{ __('dashboard.analytics') }}</h5>
+                <small>{{ __('app.portfolio') }} · {{ $project_count + $experience_count + $educational_count + $project_group_count }}</small>
               </div>
               <div class="row">
                 <div class="col-lg-7 col-md-9 col-12 order-2 order-md-1">
-                  <h6 class="text-white mt-0 mt-md-3 mb-3">Traffic</h6>
+                  <h6 class="text-white mt-0 mt-md-3 mb-3">{{ __('dashboard.projects') }}</h6>
                   <div class="row">
                     <div class="col-6">
                       <ul class="list-unstyled mb-0">
                         <li class="d-flex mb-4 align-items-center">
                           <p class="mb-0 fw-medium me-2 website-analytics-text-bg">{{ $project_count }}</p>
-                          <p class="mb-0">Projects</p>
+                          <p class="mb-0">{{ __('dashboard.projects') }}</p>
                         </li>
                         <li class="d-flex align-items-center mb-2">
                           <p class="mb-0 fw-medium me-2 website-analytics-text-bg">{{ $experience_count }}</p>
-                          <p class="mb-0">Experience</p>
+                          <p class="mb-0">{{ __('dashboard.experiences') }}</p>
                         </li>
                       </ul>
                     </div>
@@ -36,7 +36,7 @@
                       <ul class="list-unstyled mb-0">
                         <li class="d-flex mb-4 align-items-center">
                           <p class="mb-0 fw-medium me-2 website-analytics-text-bg">{{ $project_group_count }}</p>
-                          <p class="mb-0">Group</p>
+                          <p class="mb-0">{{ __('dashboard.project_groups') }}</p>
                         </li>
                         <li class="d-flex align-items-center mb-2">
                           <p class="mb-0 fw-medium me-2 website-analytics-text-bg">{{ $educational_count }}</p>
@@ -60,7 +60,7 @@
           <div class="swiper-slide">
             <div class="row">
               <div class="col-12">
-                <h5 class="text-white mb-0 mt-2">Website Analytics</h5>
+                <h5 class="text-white mb-0 mt-2">{{ __('dashboard.analytics') }}</h5>
                 <small>Total {{ $language_count + $skill_count + $link_count + $website_count }}</small>
               </div>
               <div class="col-lg-7 col-md-9 col-12 order-2 order-md-1">
@@ -124,7 +124,7 @@
                 <span class="badge bg-label-info p-1 rounded"
                   ><i class="ti ti-shopping-cart ti-xs"></i
                 ></span>
-                <p class="mb-0">Projects</p>
+                <p class="mb-0">{{ __('dashboard.projects') }}</p>
               </div>
               <h5 class="mb-0 pt-1 text-nowrap">100%</h5>
               <small class="text-muted">{{ $project_count }}</small>
@@ -138,7 +138,7 @@
             </div>
             <div class="col-4 text-end">
               <div class="d-flex gap-2 justify-content-end align-items-center mb-2">
-                <p class="mb-0">Groups</p>
+                <p class="mb-0">{{ __('dashboard.project_groups') }}</p>
                 <span class="badge bg-label-primary p-1 rounded"><i class="ti ti-link ti-xs"></i></span>
               </div>
               <h5 class="mb-0 pt-1 text-nowrap ms-lg-n3 ms-xl-0">100%</h5>
@@ -178,7 +178,7 @@
             </span>
           </div>
           <h5 class="card-title mb-0 mt-2">{{ $experience_count }}</h5>
-          <small>Experiences</small>
+          <small>{{ __('dashboard.experiences') }}</small>
         </div>
         <div id="revenueGenerated"></div>
       </div>
@@ -236,8 +236,8 @@
                 </div>
                 <div class="d-flex justify-content-between w-100 flex-wrap gap-2">
                   <div class="me-2">
-                    <h6 class="mb-0">Languages</h6>
-                    <small class="text-muted">All Languages Count</small>
+                    <h6 class="mb-0">{{ __('dashboard.languages') }}</h6>
+                    <small class="text-muted">{{ __('dashboard.languages') }}</small>
                   </div>
                   <div class="d-flex align-items-center">
                     <p class="mb-0">{{ $language_count }}</p>
@@ -253,8 +253,8 @@
                 </div>
                 <div class="d-flex justify-content-between w-100 flex-wrap gap-2">
                   <div class="me-2">
-                    <h6 class="mb-0">Skills</h6>
-                    <small class="text-muted">All Skills Count</small>
+                    <h6 class="mb-0">{{ __('dashboard.skills') }}</h6>
+                    <small class="text-muted">{{ __('dashboard.skills') }}</small>
                   </div>
                   <div class="d-flex align-items-center">
                     <p class="mb-0">{{ $skill_count }}</p>
@@ -330,7 +330,7 @@
                 <th>Title</th>
                 <th>Description</th>
                 <th>Date</th>
-                <th>Project Group</th>
+                <th>{{ __('dashboard.project_group') }}</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -482,7 +482,7 @@
           }
         }
       });
-      $('div.head-label').html('<h5 class="card-title mb-0">Projects</h5>');
+      $('div.head-label').html('<h5 class="card-title mb-0">{{ __("dashboard.projects") }}</h5>');
     });
   </script>
 @endsection

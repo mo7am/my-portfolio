@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" data-theme="dark">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -19,10 +19,10 @@
 
     <title>{{ tenant()->user->first_name }} {{ tenant()->user->second_name }} | {{ config('app.name') }}</title>
     <meta name="description" content="Build a stunning online portfolio and resume in minutes. Showcase your projects, highlight your skills, and download a professional CV instantly.">
-    <meta name="keywords" content="portfolio, resume, cv, online cv, {{ tenant()->user->first_name }} {{ tenant()->user->second_name }}, full stack developer, projects showcase, professional profile">
+    <meta name="keywords" content="portfolio, resume, cv, online cv, {{ tenant()->user->first_name }} {{ tenant()->user->second_name }}, portfolio, resume, cv, professional profile">
     <meta name="robots" content="index, follow" />
 
-    <meta property="og:title" content="{{ tenant()->user->first_name }} {{ tenant()->user->second_name }} - {{ tenant()->user->job_title??'Professional Portfolio' }}" />
+    <meta property="og:title" content="{{ tenant()->user->first_name }} {{ tenant()->user->second_name }} - {{ tenant()->user->job_title??__('app.portfolio') }}" />
     <meta property="og:description" content="Build a stunning online portfolio and resume in minutes. Showcase your projects, highlight your skills, and download a professional CV instantly." />
     <meta property="og:image" content="{{ tenant()->user->getFirstMediaUrl('logo')}}" />
     <meta property="og:image:width" content="1200" />
@@ -35,7 +35,7 @@
     <meta property="og:type" content="website" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{{ tenant()->user->first_name }} {{ tenant()->user->second_name }} - {{ tenant()->user->job_title??'Professional Portfolio' }}" />
+    <meta name="twitter:title" content="{{ tenant()->user->first_name }} {{ tenant()->user->second_name }} - {{ tenant()->user->job_title??__('app.portfolio') }}" />
     <meta name="twitter:description" content="Build a stunning online portfolio and resume in minutes. Showcase your projects, highlight your skills, and download a professional CV instantly." />
     <meta name="twitter:image" content="{{ tenant()->user->getFirstMediaUrl('logo') }}" />
 
@@ -44,11 +44,11 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
   </head>
   <body>
     @php
@@ -63,31 +63,35 @@
 
       @if(!auth('sanctum')->check())
         <div class="cta-message">
-          New on our platform?
-          <a href="{{ route('register') }}">Create one</a>
+          {{ __('app.new_on_platform') }}
+          <a href="{{ route('register') }}">{{ __('app.create_account') }}</a>
         </div>
       @endif
 
       <nav class="nav" aria-label="Primary">
         @if(auth('sanctum')->check())
-          <a href="{{ auth('sanctum')->user()->type === \App\Enums\UserType::CLIENT->value ? route('clients.index') : route('admins.index') }}" class="nav-link">Dashboard</a>
+          <a href="{{ auth('sanctum')->user()->type === \App\Enums\UserType::CLIENT->value ? route('clients.index') : route('admins.index') }}" class="nav-link">{{ __('app.dashboard') }}</a>
         @endif
-        <a href="{{ route('portfolio.home', ['domain' => $domain]) }}" class="nav-link {{ $currentRoute === 'portfolio.home' ? 'active' : '' }}">Home</a>
+        <a href="{{ route('portfolio.home', ['domain' => $domain]) }}" class="nav-link {{ $currentRoute === 'portfolio.home' ? 'active' : '' }}">{{ __('app.home') }}</a>
         @if (tenant()->is_show_project)
-          <a href="{{ route('portfolio.projects', ['domain' => $domain]) }}" class="nav-link {{ $currentRoute === 'portfolio.projects' ? 'active' : '' }}">Projects</a>
+          <a href="{{ route('portfolio.projects', ['domain' => $domain]) }}" class="nav-link {{ $currentRoute === 'portfolio.projects' ? 'active' : '' }}">{{ __('app.projects') }}</a>
         @endif
-        <a href="{{ route('portfolio.resume', ['domain' => $domain]) }}" class="nav-link {{ $currentRoute === 'portfolio.resume' ? 'active' : '' }}">Resume</a>
+        <a href="{{ route('portfolio.resume', ['domain' => $domain]) }}" class="nav-link {{ $currentRoute === 'portfolio.resume' ? 'active' : '' }}">{{ __('app.resume') }}</a>
         @if (tenant()->is_show_contact)
-          <a href="{{ route('portfolio.contact', ['domain' => $domain]) }}" class="nav-link {{ $currentRoute === 'portfolio.contact' ? 'active' : '' }}">Contact</a>
+          <a href="{{ route('portfolio.contact', ['domain' => $domain]) }}" class="nav-link {{ $currentRoute === 'portfolio.contact' ? 'active' : '' }}">{{ __('app.contact') }}</a>
         @endif
       </nav>
 
       <div class="header-actions">
-        <button class="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle theme">
+        <div class="locale-switch" style="display:inline-flex;gap:.35rem;align-items:center;">
+          <a class="btn {{ app()->getLocale() === 'en' ? 'primary' : '' }}" style="padding:.45rem .7rem;font-size:.8rem;" href="{{ route('locale.switch', 'en') }}">EN</a>
+          <a class="btn {{ app()->getLocale() === 'ar' ? 'primary' : '' }}" style="padding:.45rem .7rem;font-size:.8rem;" href="{{ route('locale.switch', 'ar') }}">ع</a>
+        </div>
+        <button class="theme-toggle" type="button" aria-label="{{ __('app.toggle_theme') }}" title="{{ __('app.toggle_theme') }}">
           <i class="bi bi-moon-stars icon-moon" aria-hidden="true"></i>
           <i class="bi bi-sun icon-sun" aria-hidden="true"></i>
         </button>
-        <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+        <button class="nav-toggle" type="button" aria-label="{{ __('app.toggle_nav') }}" aria-expanded="false">
           <i class="bi bi-list"></i>
         </button>
       </div>
@@ -100,7 +104,7 @@
     </main>
 
     <footer class="site-footer">
-      <p>© <span id="year"></span> {{ ucwords(tenant()->user->name) }}. All rights reserved.</p>
+      <p>© <span id="year"></span> {{ ucwords(tenant()->user->name) }}. {{ __('app.all_rights_reserved') }}</p>
 
       @if (tenant()->is_show_link)
         <div class="socials">
@@ -113,6 +117,7 @@
       @endif
     </footer>
 
+    @include('partials.sweetalert')
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script>
       AOS.init({ duration: 650, once: true, easing: 'ease-out-cubic', offset: 40 });
@@ -171,10 +176,10 @@
     </script>
     <script>
       @if(session('success'))
-        Swal.fire({ icon: 'success', title: 'Success', text: '{{ session('success') }}' });
+        PortfolioToast.fire({ icon: 'success', title: @json(session('success')) });
       @endif
       @if($errors->any())
-        Swal.fire({ icon: 'error', title: 'Validation Error', html: '{!! implode('<br>', $errors->all()) !!}' });
+        PortfolioToast.fire({ icon: 'error', title: @json($errors->first()) });
       @endif
     </script>
   </body>

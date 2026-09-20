@@ -14,8 +14,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Tajawal:wght@400;500;700;800&display=swap"
       rel="stylesheet" />
+    <style>
+      [dir="rtl"] body, [lang="ar"] body { font-family: 'Tajawal', 'Public Sans', sans-serif; }
+      .page-intro p { max-width: 48rem; }
+      @media (max-width: 767.98px) {
+        .container-p-y { padding-top: 1rem !important; padding-bottom: 1.25rem !important; }
+        .card-datatable { overflow-x: auto; }
+        .dt-action-buttons { text-align: start !important; margin-top: .75rem; }
+        .layout-navbar.navbar-detached { margin-inline: .75rem; width: auto; }
+        .app-brand-text { font-size: .95rem; }
+      }
+    </style>
 
     <!-- Icons -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fontawesome.css') }}" />
@@ -150,5 +161,7 @@
           z-index: 3;
         }
   </style>
+
+  @yield('styles')
 
   </head>

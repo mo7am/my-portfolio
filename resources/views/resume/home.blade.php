@@ -1,6 +1,6 @@
 @extends('resume.layouts.app')
 
-@section('title','Home')
+@section('title', __('app.home'))
 
 @section('content')
 @php
@@ -25,24 +25,24 @@
     @endif
     <div class="cta">
       @if (tenant()->is_show_project && $projectCount > 0)
-        <a href="{{ route('portfolio.projects', ['domain' => tenant()->user->domain]) }}" class="btn primary">View Projects</a>
+        <a href="{{ route('portfolio.projects', ['domain' => tenant()->user->domain]) }}" class="btn primary">{{ __('app.view_projects') }}</a>
       @endif
-      <a href="{{ route('portfolio.resume', ['domain' => tenant()->user->domain]) }}" class="btn">View Resume</a>
+      <a href="{{ route('portfolio.resume', ['domain' => tenant()->user->domain]) }}" class="btn">{{ __('app.view_resume') }}</a>
       @if (tenant()->is_show_contact)
-        <a href="{{ route('portfolio.contact', ['domain' => tenant()->user->domain]) }}" class="btn">Contact Me</a>
+        <a href="{{ route('portfolio.contact', ['domain' => tenant()->user->domain]) }}" class="btn">{{ __('app.contact_me') }}</a>
       @endif
     </div>
     <div class="hero-stats">
       @if ($projectCount > 0)
         <div class="hero-stat">
           <strong>{{ $projectCount }}</strong>
-          <span>{{ Str::plural('Project', $projectCount) }}</span>
+          <span>{{ __('app.projects') }}</span>
         </div>
       @endif
       @if ($user->job_title)
         <div class="hero-stat">
-          <strong>Available</strong>
-          <span>for new work</span>
+          <strong>{{ __('app.available_for_work') }}</strong>
+          <span>{{ __('app.for_new_work') }}</span>
         </div>
       @endif
     </div>
@@ -62,11 +62,11 @@
 @if ($projectCount > 0)
   <div class="home-section-title" data-aos="fade-up">
     <div>
-      <div class="section-label">Selected work</div>
-      <h2>Featured projects</h2>
+      <div class="section-label">{{ __('app.selected_work') }}</div>
+      <h2>{{ __('app.featured_projects') }}</h2>
     </div>
     @if (tenant()->is_show_project)
-      <a href="{{ route('portfolio.projects', ['domain' => tenant()->user->domain]) }}">View all →</a>
+      <a href="{{ route('portfolio.projects', ['domain' => tenant()->user->domain]) }}">{{ __('app.view_all') }} →</a>
     @endif
   </div>
 
@@ -82,7 +82,7 @@
             @endforeach
           </div>
         @endif
-        <a href="{{ route('portfolio.projects', ['domain' => tenant()->user->domain]) }}#project-{{ $project->id }}" class="link">Read more →</a>
+        <a href="{{ route('portfolio.projects', ['domain' => tenant()->user->domain]) }}#project-{{ $project->id }}" class="link">{{ __('app.read_more') }} →</a>
       </article>
     @endforeach
   </section>

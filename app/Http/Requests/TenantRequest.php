@@ -6,19 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class TenantRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -31,6 +23,11 @@ class TenantRequest extends FormRequest
             'is_show_contact' => ['sometimes', 'boolean'],
             'is_show_download_cv' => ['sometimes', 'boolean'],
             'is_show_website' => ['sometimes', 'boolean'],
+            'is_show_certification' => ['sometimes', 'boolean'],
+            'is_show_course' => ['sometimes', 'boolean'],
+            'is_show_award' => ['sometimes', 'boolean'],
+            'is_show_volunteering' => ['sometimes', 'boolean'],
+            'is_show_reference' => ['sometimes', 'boolean'],
         ];
     }
 }

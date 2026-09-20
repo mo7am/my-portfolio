@@ -42,58 +42,40 @@
     <script src="{{ asset('assets/js/forms-typeahead.js') }}"></script>
     <script src="{{ asset('assets/js/tables-datatables-basic.js') }}"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/codethereal-iconpicker@1.2.1/dist/iconpicker.js"></script>
-
-    
+    @include('partials.sweetalert')
+    <script>
+      @php
+        $datatableLang = app()->getLocale() === 'ar' ? [
+            'sProcessing' => 'جاري التحميل...',
+            'sLengthMenu' => 'عرض _MENU_ عنصر',
+            'sZeroRecords' => 'لا توجد نتائج مطابقة',
+            'sInfo' => 'عرض _START_ إلى _END_ من أصل _TOTAL_',
+            'sInfoEmpty' => 'لا توجد بيانات للعرض',
+            'sSearch' => 'بحث:',
+            'oPaginate' => ['sFirst' => 'الأولى', 'sPrevious' => 'السابق', 'sNext' => 'التالي', 'sLast' => 'الأخيرة'],
+        ] : [];
+      @endphp
+      window.datatableLang = @json($datatableLang);
+    </script>
 
     @yield('scripts')
 
     <script>
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            customClass: {
-                popup: 'custom-toast'
-            },
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-            }
-        });
-    
-        @if(session('success'))
-            Toast.fire({
-                icon: 'success',
-                title: "{{ session('success') }}"
-            });
-        @endif
-        @if(session('error'))
-            Toast.fire({
-                icon: 'error',
-                title: "{{ session('error') }}"
-            });
-        @endif
-
         $(document).on('click', '.delete-confirm', function (e) {
             e.preventDefault();
-
-            let url   = $(this).data('url');
-            let title = $(this).data('title') || 'Are you sure you want to delete this resource?';
-            let message = $(this).data('message') || 'You cannot undo this action!';
+            let url = $(this).data('url');
+            let title = $(this).data('title') || @json(__('messages.confirm_delete'));
+            let message = $(this).data('message') || @json(__('messages.cannot_undo'));
             let tableId = $(this).data('table');
 
-            Swal.fire({
+            PortfolioSwal.fire({
                 title: title,
                 text: message,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#DD6B55',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel'
+                confirmButtonText: @json(__('app.yes')),
+                cancelButtonText: @json(__('app.cancel'))
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetch(url, {
@@ -108,23 +90,13 @@
                         return response.json();
                     })
                     .then(data => {
-                        Toast.fire({
-                            icon: 'success',
-                            title: data.message || 'Educational deleted successfully'
-                        });
-                        $('#' + tableId).DataTable().ajax.reload(null, false);
+                        PortfolioToast.fire({ icon: 'success', title: data.message || @json(__('messages.deleted', ['item' => ''])) });
+                        if (tableId) $('#' + tableId).DataTable().ajax.reload(null, false);
                     })
-                    .catch(err => {
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Something went wrong.'
-                        });
+                    .catch(() => {
+                        PortfolioToast.fire({ icon: 'error', title: @json(__('messages.error')) });
                     });
                 }
             });
         });
-
     </script>
-
-
-    

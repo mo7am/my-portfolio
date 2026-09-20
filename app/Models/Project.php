@@ -2,23 +2,35 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Project extends Model
 {
-    use BelongsToTenant;
-    
+    use BelongsToTenant, HasTranslations;
+
     /**
-     * The attributes that are mass assignable.
-     *
+     * @var list<string>
+     */
+    public array $translatable = [
+        'title',
+        'role',
+        'description',
+        'tags',
+        'other',
+    ];
+
+    /**
      * @var list<string>
      */
     protected $fillable = [
         'tenant_id',
         'project_work_id',
         'title',
+        'role',
+        'type',
         'description',
         'date',
         'tags',
@@ -28,15 +40,12 @@ class Project extends Model
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
             'date' => 'datetime',
-            'tags' => 'array',
         ];
     }
 

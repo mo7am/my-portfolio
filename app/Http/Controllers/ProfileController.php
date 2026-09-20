@@ -61,21 +61,46 @@ class ProfileController extends Controller
     public function updateClientProfile(ClientRequest $request)
     {
         $domain = strtolower($request->domain);
-        $user = $this->userLibrary->save(array_merge($request->except('logo', 'domain'), ['domain' => $domain]), auth('sanctum')->user());
+        $user = $this->userLibrary->save(
+            array_merge($request->safe()->except('logo', 'domain'), ['domain' => $domain]),
+            auth('sanctum')->user()
+        );
+
         if ($request->hasFile('logo')) {
-            $user->addMediaFromRequest('logo')->toMediaCollection('logo', 'users');
+            $user->clearMediaCollection('logo');
+            $user
+                ->addMediaFromRequest('logo')
+                ->usingFileName($this->safeLogoFileName($request->file('logo')))
+                ->toMediaCollection('logo', 'users');
             $user->load('media');
         }
-        return redirect()->back()->with('success', 'Your informations updated successfully');
+
+        return redirect()->back()->with('success', __('messages.profile_updated'));
     }
 
     public function updateAdminProfile(UserRequest $request)
     {
-        $user = $this->userLibrary->save($request->except('logo'), auth('sanctum')->user());
+        $user = $this->userLibrary->save($request->safe()->except('logo'), auth('sanctum')->user());
+
         if ($request->hasFile('logo')) {
-            $user->addMediaFromRequest('logo')->toMediaCollection('logo', 'users');
+            $user->clearMediaCollection('logo');
+            $user
+                ->addMediaFromRequest('logo')
+                ->usingFileName($this->safeLogoFileName($request->file('logo')))
+                ->toMediaCollection('logo', 'users');
             $user->load('media');
         }
-        return redirect()->back()->with('success', 'Your informations updated successfully');
+
+        return redirect()->back()->with('success', __('messages.profile_updated'));
+    }
+
+    protected function safeLogoFileName($file): string
+    {
+        $ext = strtolower($file->getClientOriginalExtension() ?: 'jpg');
+        if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true)) {
+            $ext = 'jpg';
+        }
+
+        return 'profile-'.now()->format('YmdHis').'.'.$ext;
     }
 }
