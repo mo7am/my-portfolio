@@ -63,6 +63,10 @@
         flex: 1;
       }
 
+      .new-content {
+            margin-left: 165px;
+        }
+
       /* ---- Personal Info ---- */
       .personal-info .info-wrapper {
         display: flex;
@@ -148,12 +152,12 @@
           width: 100px; height: 150px; margin-top: 29px;
         }
       }
-      
+
       * {
         overflow-wrap: break-word;
       }
       /* ---- Project ---- */
-      .project { max-width: 100%; overflow-x: hidden; 
+      .project { max-width: 100%; overflow-x: hidden;
         word-wrap: break-word;
         overflow-wrap: break-word;
       }
@@ -200,7 +204,7 @@
           display: flex;
           justify-content: center;
           gap: 10px;
-          flex-wrap: wrap; 
+          flex-wrap: wrap;
         }
       }
 
@@ -224,7 +228,7 @@
           display: flex;
           justify-content: center;
           gap: 10px;
-          flex-wrap: wrap; 
+          flex-wrap: wrap;
         }
 
         .name-class {
@@ -312,7 +316,7 @@
         <a class="brand" href="{{ route('portfolio.home', ['domain' => tenant()->user->domain]) }}">
           <span>{{ ucwords(tenant()->user->first_name) }}</span> {{ ucwords(tenant()->user->second_name) }}
         </a>
-    
+
         @if(!auth('sanctum')->check())
           <div class="cta-message" style="flex:1; text-align:center; font-size:14px; font-weight:500; color:#555;">
             New on our platform?
@@ -321,7 +325,7 @@
             </a>
           </div>
         @endif
-    
+
         <button class="nav-toggle"><i class="bi bi-list"></i></button>
         <nav class="nav">
           @if(auth('sanctum')->check())
@@ -338,7 +342,7 @@
         </nav>
       </div>
     </header>
-    
+
 
     <main>
       @yield('content')
@@ -346,7 +350,7 @@
 
     <footer class="site-footer">
       <p style="font-size: 15px;">© <span id="year"></span> {{ ucwords(tenant()->user->name) }}. All rights reserved.</p>
-    
+
       @if (tenant()->is_show_link)
         <div class="socials">
           @foreach (tenant()->links as $link)

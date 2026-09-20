@@ -10,17 +10,17 @@
       <div class="info-text">
         <h2>Personal Information</h2>
         <p><b>Name:</b> {{ ucwords($user->name) }}</p>
-        <p><b>Email:</b> 
+        <p><b>Email:</b>
           <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ $user->email }}" target="_blank" rel="noopener">
             {{ $user->email }}
           </a>
         </p>
         @if ($user->phone)
-          <p><b>Phone:</b> 
+          <p><b>Phone:</b>
             <a href="https://wa.me/{{ $user->phone }}" target="_blank" rel="noopener">
               {{ $user->phone }}
             </a>
-          </p>    
+          </p>
         @endif
         @if ($user->address)
           <p><b>Address:</b> {{ $user->address }}</p>
@@ -35,7 +35,7 @@
           <p><b>Marital Status:</b> {{ $user->marital_status }}</p>
         @endif
       </div>
-  
+
       <div class="info-photo">
         <img class="square-image" src="{{ $user->getFirstMediaUrl('logo') }}" alt="{{ ucwords($user->name) }}">
       </div>
@@ -56,7 +56,7 @@
         <ul class="timeline">
           @foreach ($experiences as $experience)
           <li><span class="time">{{ \Carbon\Carbon::parse($experience->start_date)->format('M Y') }} – {{ $experience->end_date ? \Carbon\Carbon::parse($experience->end_date)->format('M Y') : 'Present' }}</span>
-            <div class="content"><strong>{{ $experience->title }} {{ $experience->company }}</strong><p>{{ $experience->description }}</p></div>
+            <div class="content new-content"><strong>{{ $experience->title }} {{ $experience->company }}</strong><p>{{ $experience->description }}</p></div>
           </li>
           @endforeach
         </ul>
