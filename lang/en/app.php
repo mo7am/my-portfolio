@@ -76,4 +76,6 @@ return [
     'editing_cv_in' => 'Editing CV content in :language',
     'no_selection' => 'No category selected',
     'clear_selection_hint' => 'Optional. Use the × to clear the selected category.',
+    'view_photo' => 'View photo',
+    'close' => 'Close',
 ];

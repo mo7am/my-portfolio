@@ -76,4 +76,6 @@ return [
     'editing_cv_in' => 'تعديل محتوى السيرة باللغة: :language',
     'no_selection' => 'بدون تصنيف',
     'clear_selection_hint' => 'اختياري. يمكنك إزالة التصنيف بالضغط على ×.',
+    'view_photo' => 'عرض الصورة',
+    'close' => 'إغلاق',
 ];

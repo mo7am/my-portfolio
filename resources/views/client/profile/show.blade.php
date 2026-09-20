@@ -384,8 +384,8 @@
                   <label class="form-label" for="marital_status">{{ __('cv.marital_status') }}</label>
                   <select name="marital_status" id="marital_status" class="select2 form-select @error('marital_status') is-invalid @enderror">
                     <option value="">—</option>
-                    <option value="Single" @selected(old('marital_status', $user->marital_status) === 'Single')>Single</option>
-                    <option value="Married" @selected(old('marital_status', $user->marital_status) === 'Married')>Married</option>
+                    <option value="Single" @selected(old('marital_status', $user->marital_status) === 'Single')>{{ __('cv.marital.Single') }}</option>
+                    <option value="Married" @selected(old('marital_status', $user->marital_status) === 'Married')>{{ __('cv.marital.Married') }}</option>
                   </select>
                   @error('marital_status')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>

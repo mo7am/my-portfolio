@@ -51,7 +51,16 @@
   <div class="hero-visual" aria-hidden="true">
     <div class="hero-portrait">
       @if($logoUrl)
-        <img src="{{ $logoUrl }}" alt="{{ ucwords($user->name) }}">
+        <img
+          class="js-lightbox-trigger"
+          src="{{ $logoUrl }}"
+          alt="{{ ucwords($user->name) }}"
+          data-lightbox-src="{{ $logoUrl }}"
+          data-lightbox-alt="{{ ucwords($user->name) }}"
+          role="button"
+          tabindex="0"
+          aria-label="{{ __('app.view_photo') }}"
+        >
       @else
         <div class="hero-portrait-fallback">{{ $initials ?: 'ME' }}</div>
       @endif

@@ -24,13 +24,13 @@
             <div class="info-row"><span class="label">{{ __('cv.address') }}</span><span class="value">{{ $user->address }}</span></div>
           @endif
           @if ($user->birthdate)
-            <div class="info-row"><span class="label">{{ __('cv.date_of_birth') }}</span><span class="value">{{ \Carbon\Carbon::parse($user->birthdate)->translatedFormat('j F Y') }}</span></div>
+            <div class="info-row"><span class="label">{{ __('cv.date_of_birth') }}</span><span class="value">{{ \Carbon\Carbon::parse($user->birthdate)->locale(app()->getLocale())->translatedFormat('j F Y') }}</span></div>
           @endif
           @if ($user->nationality)
             <div class="info-row"><span class="label">{{ __('cv.nationality') }}</span><span class="value">{{ $user->nationality }}</span></div>
           @endif
           @if ($user->marital_status)
-            <div class="info-row"><span class="label">{{ __('cv.marital_status') }}</span><span class="value">{{ $user->marital_status }}</span></div>
+            <div class="info-row"><span class="label">{{ __('cv.marital_status') }}</span><span class="value">{{ marital_status_label($user->marital_status) }}</span></div>
           @endif
           @if ($user->job_title)
             <div class="info-row"><span class="label">{{ __('cv.role') }}</span><span class="value">{{ ucwords($user->job_title) }}</span></div>
@@ -38,7 +38,18 @@
         </div>
       </div>
       @if ($user->getFirstMediaUrl('logo'))
-        <div class="info-photo"><img class="square-image" src="{{ $user->getFirstMediaUrl('logo') }}" alt="{{ ucwords($user->name) }}"></div>
+        <div class="info-photo">
+          <img
+            class="square-image js-lightbox-trigger"
+            src="{{ $user->getFirstMediaUrl('logo') }}"
+            alt="{{ ucwords($user->name) }}"
+            data-lightbox-src="{{ $user->getFirstMediaUrl('logo') }}"
+            data-lightbox-alt="{{ ucwords($user->name) }}"
+            role="button"
+            tabindex="0"
+            aria-label="{{ __('app.view_photo') }}"
+          >
+        </div>
       @endif
     </div>
   </section>

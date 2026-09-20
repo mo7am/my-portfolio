@@ -54,7 +54,7 @@
   --radius-sm: 12px;
   --radius-lg: 24px;
   --header-h: 72px;
-  --footer-h: auto;
+  --footer-h: 64px;
   --container: 1120px;
   --font-display: "Space Grotesk", system-ui, sans-serif;
   --font-body: "Manrope", system-ui, sans-serif;
@@ -177,6 +177,7 @@ textarea:focus-visible {
   flex: 1;
   width: 100%;
   padding-top: var(--header-h);
+  padding-bottom: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
 }
 
 .container {
@@ -1176,24 +1177,33 @@ textarea:focus-visible {
 
 /* ---- Footer ---- */
 .site-footer {
-  position: relative;
-  margin-top: auto;
-  padding: 1.25rem clamp(1rem, 3vw, 2rem);
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 1000;
+  box-sizing: border-box;
+  min-height: var(--footer-h);
+  height: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
+  margin-top: 0;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   background: var(--footer-bg);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
   border-top: 1px solid var(--border);
   color: var(--muted);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  flex-wrap: wrap;
-  z-index: 10;
+  flex-wrap: nowrap;
 }
 
 .site-footer p {
   margin: 0;
   font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .socials {
@@ -1204,16 +1214,16 @@ textarea:focus-visible {
 }
 
 .socials a {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--panel-solid);
   color: var(--text) !important;
-  font-size: 1.1rem;
+  font-size: 1rem;
   transition: transform 0.2s var(--ease), border-color 0.2s var(--ease),
     background 0.2s var(--ease);
 }
@@ -1254,6 +1264,7 @@ textarea:focus-visible {
   [data-theme="dark"],
   [data-theme="light"] {
     --header-h: 64px;
+    --footer-h: 58px;
   }
 
   .site-header {
@@ -1430,14 +1441,16 @@ textarea:focus-visible {
   }
 
   .site-footer {
-    flex-direction: column;
-    text-align: center;
-    padding: 1.15rem 1rem calc(1.15rem + env(safe-area-inset-bottom, 0px));
+    flex-direction: row;
+    text-align: start;
+    height: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
+    padding: 0 max(0.85rem, env(safe-area-inset-left, 0px)) env(safe-area-inset-bottom, 0px) max(0.85rem, env(safe-area-inset-right, 0px));
   }
 
   .site-footer p {
-    font-size: 0.82rem;
-    line-height: 1.45;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    white-space: normal;
   }
 
   .home-section-title {
@@ -1450,6 +1463,7 @@ textarea:focus-visible {
   [data-theme="dark"],
   [data-theme="light"] {
     --header-h: 60px;
+    --footer-h: 56px;
   }
 
   .site-header {
@@ -1626,3 +1640,96 @@ textarea:focus-visible {
 [dir="rtl"] .brand { direction: rtl; }
 [dir="rtl"] .site-footer { direction: rtl; }
 [dir="rtl"] .link { flex-direction: row-reverse; }
+
+/* ---- Profile image lightbox ---- */
+.js-lightbox-trigger {
+  cursor: zoom-in;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.js-lightbox-trigger:hover {
+  transform: scale(1.02);
+}
+
+.portfolio-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease), visibility 0.25s var(--ease);
+}
+
+.portfolio-lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.portfolio-lightbox__dialog {
+  position: relative;
+  max-width: min(92vw, 720px);
+  max-height: min(88vh, 880px);
+  transform: scale(0.94);
+  transition: transform 0.28s var(--ease);
+}
+
+.portfolio-lightbox.is-open .portfolio-lightbox__dialog {
+  transform: scale(1);
+}
+
+.portfolio-lightbox__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(82vh, 820px);
+  border-radius: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+  object-fit: contain;
+  background: #111;
+}
+
+.portfolio-lightbox__close {
+  position: absolute;
+  top: -0.85rem;
+  inset-inline-end: -0.85rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(20, 25, 34, 0.95);
+  color: #fff;
+  font-size: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+.portfolio-lightbox__close:hover {
+  transform: scale(1.06);
+  background: rgba(40, 48, 62, 0.98);
+}
+
+body.lightbox-open {
+  overflow: hidden;
+}
+
+@media (max-width: 600px) {
+  .portfolio-lightbox__close {
+    top: 0.35rem;
+    inset-inline-end: 0.35rem;
+  }
+}

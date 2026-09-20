@@ -21,6 +21,10 @@ return [
     'date_of_birth' => 'Date of birth',
     'nationality' => 'Nationality',
     'marital_status' => 'Marital status',
+    'marital' => [
+        'Single' => 'Single',
+        'Married' => 'Married',
+    ],
     'role' => 'Role',
     'tech_stack' => 'Tags / tools',
     'portfolio_intro' => 'A selection of work across roles and industries, with links when available.',

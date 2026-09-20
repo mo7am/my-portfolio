@@ -117,6 +117,15 @@
       @endif
     </footer>
 
+    <div class="portfolio-lightbox" id="portfolioLightbox" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="{{ __('app.view_photo') }}">
+      <div class="portfolio-lightbox__dialog">
+        <button type="button" class="portfolio-lightbox__close" id="portfolioLightboxClose" aria-label="{{ __('app.close') }}">
+          <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+        <img class="portfolio-lightbox__img" id="portfolioLightboxImg" src="" alt="">
+      </div>
+    </div>
+
     @include('partials.sweetalert')
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script>
@@ -171,6 +180,54 @@
         });
         window.addEventListener('resize', () => {
           if (window.innerWidth > 900) setOpen(false);
+        });
+      })();
+
+      (function () {
+        const lightbox = document.getElementById('portfolioLightbox');
+        const img = document.getElementById('portfolioLightboxImg');
+        const closeBtn = document.getElementById('portfolioLightboxClose');
+        if (!lightbox || !img) return;
+
+        const open = (src, alt) => {
+          img.src = src;
+          img.alt = alt || '';
+          lightbox.hidden = false;
+          lightbox.setAttribute('aria-hidden', 'false');
+          requestAnimationFrame(() => lightbox.classList.add('is-open'));
+          document.body.classList.add('lightbox-open');
+          closeBtn?.focus();
+        };
+
+        const close = () => {
+          lightbox.classList.remove('is-open');
+          document.body.classList.remove('lightbox-open');
+          lightbox.setAttribute('aria-hidden', 'true');
+          setTimeout(() => {
+            if (!lightbox.classList.contains('is-open')) {
+              lightbox.hidden = true;
+              img.removeAttribute('src');
+            }
+          }, 250);
+        };
+
+        document.querySelectorAll('.js-lightbox-trigger').forEach((el) => {
+          const trigger = () => open(el.getAttribute('data-lightbox-src') || el.getAttribute('src'), el.getAttribute('data-lightbox-alt') || el.getAttribute('alt'));
+          el.addEventListener('click', trigger);
+          el.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              trigger();
+            }
+          });
+        });
+
+        closeBtn?.addEventListener('click', close);
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) close();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && lightbox.classList.contains('is-open')) close();
         });
       })();
     </script>
