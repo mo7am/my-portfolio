@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\MaritalStatus;
 use App\Enums\Status;
 use App\Enums\UserType;
 use Illuminate\Database\Migrations\Migration;
@@ -29,7 +28,6 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->timestamp('birthdate')->nullable();
             $table->string('nationality')->nullable();
-            $table->enum('status', Status::values())->nullable();
             $table->string('marital_status')->nullable();
             $table->mediumText('objective')->nullable();
             $table->string('domain')->nullable();
