@@ -105,7 +105,6 @@
 
     <footer class="site-footer">
       <p>© <span id="year"></span> {{ ucwords(tenant()->user->name) }}. {{ __('app.all_rights_reserved') }}</p>
-
       @if (tenant()->is_show_link)
         <div class="socials">
           @foreach (tenant()->links as $link)
@@ -129,8 +128,34 @@
     @include('partials.sweetalert')
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script>
-      AOS.init({ duration: 650, once: true, easing: 'ease-out-cubic', offset: 40 });
+      const isMobile = window.matchMedia('(max-width: 900px)').matches;
+
+      AOS.init({
+        duration: isMobile ? 500 : 650,
+        once: true,
+        easing: 'ease-out-cubic',
+        // Mobile viewports are shorter — trigger earlier so sections animate while scrolling
+        offset: isMobile ? 8 : 20,
+        delay: 0,
+        disable: false,
+      });
+
       document.getElementById('year').textContent = new Date().getFullYear();
+
+      // If a section stays hidden (rare on some mobile browsers), reveal it after settle
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          if (typeof AOS !== 'undefined') {
+            AOS.refreshHard();
+          }
+          document.querySelectorAll('[data-aos]:not(.aos-animate)').forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+              el.classList.add('aos-animate');
+            }
+          });
+        }, 400);
+      });
 
       (function () {
         const root = document.documentElement;
@@ -181,6 +206,34 @@
         window.addEventListener('resize', () => {
           if (window.innerWidth > 900) setOpen(false);
         });
+      })();
+
+      (function () {
+        const footer = document.querySelector('.site-footer');
+        const main = document.querySelector('.site-main');
+        if (!footer) return;
+
+        const syncFooterSpace = () => {
+          const height = Math.ceil(footer.getBoundingClientRect().height);
+          if (height > 0) {
+            document.documentElement.style.setProperty('--footer-h', height + 'px');
+          }
+          if (main) {
+            // Extra breathing room so last card is never tucked under the sticky footer
+            main.style.paddingBottom = (height + 24) + 'px';
+          }
+          if (typeof AOS !== 'undefined') {
+            AOS.refresh();
+          }
+        };
+
+        syncFooterSpace();
+        if ('ResizeObserver' in window) {
+          new ResizeObserver(syncFooterSpace).observe(footer);
+        }
+        window.addEventListener('load', syncFooterSpace);
+        window.addEventListener('orientationchange', () => setTimeout(syncFooterSpace, 200));
+        window.addEventListener('resize', syncFooterSpace);
       })();
 
       (function () {

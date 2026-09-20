@@ -125,7 +125,7 @@ html {
 
 html,
 body {
-  height: 100%;
+  min-height: 100%;
   margin: 0;
 }
 
@@ -133,6 +133,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
   font-family: var(--font-body);
   color: var(--text);
   background:
@@ -143,7 +144,8 @@ body {
   background-attachment: fixed;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
+  overflow-y: auto;
   transition: background-color 0.25s var(--ease), color 0.25s var(--ease);
 }
 
@@ -177,7 +179,7 @@ textarea:focus-visible {
   flex: 1;
   width: 100%;
   padding-top: var(--header-h);
-  padding-bottom: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(var(--footer-h) + 1rem + env(safe-area-inset-bottom, 0px));
 }
 
 .container {
@@ -1182,10 +1184,10 @@ textarea:focus-visible {
   z-index: 1000;
   box-sizing: border-box;
   min-height: var(--footer-h);
-  height: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
+  height: auto;
   margin-top: 0;
-  padding: 0 clamp(1rem, 3vw, 2rem);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding: 0.75rem clamp(1rem, 3vw, 2rem);
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
   background: var(--footer-bg);
   backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
@@ -1194,28 +1196,32 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: nowrap;
+  gap: 0.85rem 1.25rem;
+  flex-wrap: wrap;
 }
 
 .site-footer p {
   margin: 0;
   font-size: 0.9rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.4;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .socials {
   display: flex;
-  gap: 0.65rem;
-  justify-content: center;
-  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex: 0 0 auto;
+  margin-inline-start: auto;
 }
 
 .socials a {
   width: 36px;
   height: 36px;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1264,7 +1270,7 @@ textarea:focus-visible {
   [data-theme="dark"],
   [data-theme="light"] {
     --header-h: 64px;
-    --footer-h: 58px;
+    --footer-h: 108px;
   }
 
   .site-header {
@@ -1347,7 +1353,7 @@ textarea:focus-visible {
 @media (max-width: 768px) {
   .container {
     width: min(100% - 1.25rem, var(--container));
-    padding: 1.35rem 0 2.75rem;
+    padding: 1.35rem 0 3.5rem;
   }
 
   .hero,
@@ -1441,16 +1447,43 @@ textarea:focus-visible {
   }
 
   .site-footer {
-    flex-direction: row;
-    text-align: start;
-    height: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
-    padding: 0 max(0.85rem, env(safe-area-inset-left, 0px)) env(safe-area-inset-bottom, 0px) max(0.85rem, env(safe-area-inset-right, 0px));
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.65rem;
+    min-height: 0;
+    height: auto;
+    padding: 0.7rem max(0.85rem, env(safe-area-inset-left, 0px)) calc(0.7rem + env(safe-area-inset-bottom, 0px)) max(0.85rem, env(safe-area-inset-right, 0px));
   }
 
   .site-footer p {
-    font-size: 0.78rem;
-    line-height: 1.35;
+    font-size: 0.8rem;
+    line-height: 1.4;
     white-space: normal;
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .site-footer .socials {
+    width: 100%;
+    justify-content: center;
+    margin-inline-start: 0;
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .site-footer .socials::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-footer .socials a {
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
   }
 
   .home-section-title {
@@ -1463,7 +1496,7 @@ textarea:focus-visible {
   [data-theme="dark"],
   [data-theme="light"] {
     --header-h: 60px;
-    --footer-h: 56px;
+    --footer-h: 112px;
   }
 
   .site-header {
@@ -1556,8 +1589,14 @@ textarea:focus-visible {
 @media (max-width: 900px) {
   html,
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100%;
+    /* fixed backgrounds break scrolling on many mobile browsers */
+    background-attachment: scroll;
+  }
+
+  body {
+    background-attachment: scroll;
   }
 
   .site-main,
