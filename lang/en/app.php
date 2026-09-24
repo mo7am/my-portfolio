@@ -75,6 +75,8 @@ return [
     'system_language' => 'System language',
     'cv_language' => 'CV language',
     'cv_language_hint' => 'Controls which language version of your CV data you are editing. Independent from the dashboard language.',
+    'content_language' => 'Content language',
+    'content_language_hint' => 'Controls which language version of landing content you are editing. Independent from the dashboard language.',
     'editing_cv_in' => 'Editing CV content in :language',
     'no_selection' => 'No category selected',
     'clear_selection_hint' => 'Optional. Use the × to clear the selected category.',

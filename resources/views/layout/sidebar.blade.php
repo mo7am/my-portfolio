@@ -62,5 +62,30 @@
     <li class="menu-item {{ request()->routeIs('admins.users.*') ? 'active' : '' }}">
       <a href="{{ route('admins.users.index') }}" class="menu-link"><i class="menu-icon tf-icons ti ti-users"></i><div>{{ __('dashboard.users') }}</div></a>
     </li>
+    <li class="menu-header small text-uppercase"><span class="menu-header-text">{{ __('dashboard.landing_cms') }}</span></li>
+    <li class="menu-item {{ request()->routeIs('admins.landing.settings.*') ? 'active' : '' }}">
+      <a href="{{ route('admins.landing.settings.edit') }}" class="menu-link"><i class="menu-icon tf-icons ti ti-settings"></i><div>{{ __('dashboard.landing_settings') }}</div></a>
+    </li>
+    <li class="menu-item {{ request()->routeIs('admins.landing.items.*') && request()->route('type') === 'feature' ? 'active' : '' }}">
+      <a href="{{ route('admins.landing.items.index', 'feature') }}" class="menu-link"><i class="menu-icon tf-icons ti ti-layout-grid"></i><div>{{ __('dashboard.landing_features') }}</div></a>
+    </li>
+    <li class="menu-item {{ request()->routeIs('admins.landing.items.*') && request()->route('type') === 'step' ? 'active' : '' }}">
+      <a href="{{ route('admins.landing.items.index', 'step') }}" class="menu-link"><i class="menu-icon tf-icons ti ti-list-numbers"></i><div>{{ __('dashboard.landing_steps') }}</div></a>
+    </li>
+    <li class="menu-item {{ request()->routeIs('admins.landing.items.*') && request()->route('type') === 'benefit' ? 'active' : '' }}">
+      <a href="{{ route('admins.landing.items.index', 'benefit') }}" class="menu-link"><i class="menu-icon tf-icons ti ti-rosette"></i><div>{{ __('dashboard.landing_benefits') }}</div></a>
+    </li>
+    <li class="menu-item {{ request()->routeIs('admins.landing.items.*') && request()->route('type') === 'use_case' ? 'active' : '' }}">
+      <a href="{{ route('admins.landing.items.index', 'use_case') }}" class="menu-link"><i class="menu-icon tf-icons ti ti-users-group"></i><div>{{ __('dashboard.landing_use_cases') }}</div></a>
+    </li>
+    <li class="menu-item {{ request()->routeIs('admins.landing.testimonials.*') ? 'active' : '' }}">
+      <a href="{{ route('admins.landing.testimonials.index') }}" class="menu-link"><i class="menu-icon tf-icons ti ti-message-quote"></i><div>{{ __('dashboard.landing_testimonials') }}</div></a>
+    </li>
+    <li class="menu-item {{ request()->routeIs('admins.landing.plans.*') ? 'active' : '' }}">
+      <a href="{{ route('admins.landing.plans.index') }}" class="menu-link"><i class="menu-icon tf-icons ti ti-currency-dollar"></i><div>{{ __('dashboard.landing_plans') }}</div></a>
+    </li>
+    <li class="menu-item {{ request()->routeIs('admins.landing.faqs.*') ? 'active' : '' }}">
+      <a href="{{ route('admins.landing.faqs.index') }}" class="menu-link"><i class="menu-icon tf-icons ti ti-help-circle"></i><div>{{ __('dashboard.landing_faqs') }}</div></a>
+    </li>
   @endif
 </ul>

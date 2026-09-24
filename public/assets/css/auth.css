@@ -1,0 +1,268 @@
+/* Auth pages — aligned with landing hybrid brand */
+
+:root {
+  --auth-ink: #0f172a;
+  --auth-muted: #64748b;
+  --auth-line: #e2e8f0;
+  --auth-surface: #ffffff;
+  --auth-accent: #3b82f6;
+  --auth-accent-strong: #2563eb;
+  --auth-hero: #0b1220;
+  --auth-radius: 18px;
+  --auth-font-display: "Space Grotesk", "Tajawal", system-ui, sans-serif;
+  --auth-font-body: "Manrope", "Tajawal", system-ui, sans-serif;
+}
+
+html.auth-page,
+html.auth-page body {
+  min-height: 100%;
+}
+
+body.auth-body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: var(--auth-font-body);
+  color: var(--auth-ink);
+  background:
+    radial-gradient(ellipse 80% 55% at 12% 18%, rgba(59, 130, 246, 0.22), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 88% 12%, rgba(96, 165, 250, 0.12), transparent 50%),
+    radial-gradient(ellipse 55% 40% at 55% 95%, rgba(37, 99, 235, 0.14), transparent 55%),
+    var(--auth-hero);
+  -webkit-font-smoothing: antialiased;
+}
+
+[dir="rtl"] body.auth-body {
+  font-family: "Tajawal", "Manrope", system-ui, sans-serif;
+}
+
+.auth-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1.25rem 2rem;
+  position: relative;
+}
+
+.auth-locale {
+  position: absolute;
+  top: 1.15rem;
+  inset-inline-end: 1.15rem;
+  z-index: 10;
+  display: inline-flex;
+  border: 1px solid rgba(248, 250, 252, 0.16);
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.auth-locale a {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.auth-locale a.active,
+.auth-locale a.is-active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+  border: 0;
+}
+
+.auth-card {
+  width: min(100%, 420px);
+  background: var(--auth-surface);
+  border-radius: var(--auth-radius);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  padding: 2rem 1.65rem 1.75rem;
+}
+
+@media (min-width: 480px) {
+  .auth-card {
+    padding: 2.25rem 2rem 2rem;
+  }
+}
+
+.auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.35rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.auth-brand__logo {
+  width: 52px;
+  height: 58px;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+}
+
+.auth-brand__name {
+  font-family: var(--auth-font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--auth-ink);
+  margin: 0 0 0.2rem;
+}
+
+.auth-brand__tag {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--auth-muted);
+  font-weight: 500;
+}
+
+.auth-intro {
+  margin: 0 0 1.35rem;
+  text-align: center;
+  color: var(--auth-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.auth-card .form-label {
+  font-weight: 650;
+  font-size: 0.88rem;
+  color: var(--auth-ink);
+  margin-bottom: 0.4rem;
+}
+
+.auth-card .form-control {
+  border-radius: 12px;
+  border-color: var(--auth-line);
+  min-height: 46px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+  color: var(--auth-ink);
+  background: #f8fafc;
+  box-shadow: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.auth-card .form-control:focus {
+  border-color: var(--auth-accent);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.auth-card .input-group-merge .form-control {
+  border-inline-end: 0;
+}
+
+.auth-card .input-group-text {
+  border-radius: 0 12px 12px 0;
+  border-color: var(--auth-line);
+  background: #f8fafc;
+  color: var(--auth-muted);
+}
+
+[dir="rtl"] .auth-card .input-group-text {
+  border-radius: 12px 0 0 12px;
+}
+
+.auth-card .form-control.is-invalid {
+  border-color: #ef4444;
+}
+
+.auth-card .invalid-feedback {
+  color: #dc2626 !important;
+  display: block !important;
+  font-size: 0.82rem;
+  margin-top: 0.35rem;
+}
+
+.auth-card .form-check-input:checked {
+  background-color: var(--auth-accent);
+  border-color: var(--auth-accent);
+}
+
+.auth-card .form-check-label {
+  color: var(--auth-muted);
+  font-size: 0.9rem;
+}
+
+.auth-card a {
+  color: var(--auth-accent-strong);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.auth-card a:hover {
+  color: var(--auth-accent);
+  text-decoration: underline;
+}
+
+.auth-card .btn-primary,
+.auth-card .auth-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--auth-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.28);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.auth-card .btn-primary:hover,
+.auth-card .auth-submit:hover {
+  background: var(--auth-accent-strong);
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+.auth-footer-note {
+  margin: 1.15rem 0 0;
+  text-align: center;
+  color: var(--auth-muted);
+  font-size: 0.9rem;
+}
+
+.auth-back {
+  margin-top: 1.25rem;
+  text-align: center;
+}
+
+.auth-back a {
+  color: #94a3b8;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-back a::before {
+  content: "← ";
+}
+
+[dir="rtl"] .auth-back a::before {
+  content: "→ ";
+}
+
+.auth-back a:hover {
+  color: #e2e8f0;
+}
+
+/* Hide Vuexy cover leftovers if any CSS still targets them */
+.authentication-wrapper .auth-cover-bg,
+.authentication-wrapper .auth-illustration,
+.authentication-wrapper .platform-bg {
+  display: none !important;
+}

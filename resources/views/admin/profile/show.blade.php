@@ -1,142 +1,271 @@
 @extends('layout.master')
-@section('title','Profile')
+@section('title', __('app.profile'))
+
+@section('styles')
+<style>
+  .profile-hero {
+    position: relative;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: linear-gradient(135deg, #5a8dee 0%, #7367f0 48%, #28c76f 100%);
+    min-height: 150px;
+    margin-bottom: 1.5rem;
+  }
+  .profile-hero-body {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.5rem;
+  }
+  .profile-avatar {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: 1rem;
+    border: 4px solid #fff;
+    box-shadow: 0 8px 24px rgba(34, 41, 47, 0.18);
+    background: #fff;
+  }
+  .profile-avatar-fallback {
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #7367f0;
+    background: #fff;
+  }
+  .profile-meta h3 {
+    color: #fff !important;
+    margin: 0 0 .4rem;
+    font-weight: 700;
+  }
+  .profile-meta .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+  }
+  .profile-meta .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .3rem .7rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    font-size: .8125rem;
+  }
+  .profile-actions {
+    margin-inline-start: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+  .profile-actions .btn-light {
+    background: #fff;
+    border-color: #fff;
+    color: #5d596c;
+  }
+  .profile-card .label-muted {
+    font-size: .75rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #a5a3ae;
+    font-weight: 600;
+  }
+  .profile-list li {
+    display: flex;
+    gap: .75rem;
+    align-items: flex-start;
+    padding: .65rem 0;
+    border-bottom: 1px solid rgba(75,70,92,.08);
+  }
+  .profile-list li:last-child { border-bottom: 0; }
+  .profile-list .ico {
+    width: 2rem;
+    height: 2rem;
+    border-radius: .5rem;
+    display: grid;
+    place-items: center;
+    background: rgba(115, 103, 240, .08);
+    color: #7367f0;
+    flex-shrink: 0;
+  }
+  .profile-photo-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: center;
+  }
+  .profile-photo-panel img,
+  .profile-photo-panel .profile-avatar-fallback {
+    width: 120px;
+    height: 120px;
+    border-radius: 1rem;
+    object-fit: cover;
+    border: 1px solid rgba(75,70,92,.12);
+  }
+  .stat-pill {
+    border-radius: .75rem;
+    background: rgba(115, 103, 240, .06);
+    padding: .9rem 1rem;
+  }
+  .stat-pill strong {
+    display: block;
+    font-size: 1.35rem;
+    line-height: 1.2;
+  }
+  @media (max-width: 575.98px) {
+    .profile-actions { margin-inline-start: 0; width: 100%; }
+    .profile-actions .btn { flex: 1; }
+  }
+</style>
+@endsection
+
 @section('content')
+@php
+  $logoUrl = $user->getFirstMediaUrl('logo');
+  $hasLogo = (bool) $user->getFirstMedia('logo');
+  $initials = collect(explode(' ', trim($user->name)))
+    ->filter()
+    ->take(2)
+    ->map(fn ($p) => mb_strtoupper(mb_substr($p, 0, 1)))
+    ->implode('');
+  $isEdit = request()->routeIs('admins.profile.edit');
+@endphp
 
 <div class="container-xxl flex-grow-1 container-p-y">
-  <h4 class="py-3 mb-4"><span class="text-muted fw-light">User Profile /</span> Profile</h4>
+  @include('partials.page-intro', [
+    'title' => $isEdit ? __('app.account_settings') : __('app.profile'),
+    'description' => __('dashboard.intros.admin_profile'),
+  ])
 
-  <!-- Header -->
-  <div class="row">
-    <div class="col-12">
-      <div class="card mb-4">
-        <div class="user-profile-header-banner">
-          <img src="{{ asset('assets/img/pages/profile-banner.png') }}" alt="Banner image" class="rounded-top" style="width: -webkit-fill-available;"/>
+  <div class="profile-hero">
+    <div class="profile-hero-body">
+      @if($hasLogo)
+        <img class="profile-avatar" src="{{ $logoUrl }}" alt="{{ $user->name }}">
+      @else
+        <div class="profile-avatar profile-avatar-fallback">{{ $initials ?: 'AD' }}</div>
+      @endif
+
+      <div class="profile-meta">
+        <h3>{{ ucwords($user->name) }}</h3>
+        <div class="chips">
+          <span class="chip"><i class="ti ti-shield"></i> {{ __('dashboard.admins') }}</span>
+          @if($user->address)
+            <span class="chip"><i class="ti ti-map-pin"></i> {{ $user->address }}</span>
+          @endif
+          <span class="chip"><i class="ti ti-calendar"></i> {{ __('app.joined') }} {{ $user->created_at->translatedFormat('F Y') }}</span>
         </div>
-        <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
-          <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
-            <img style="width: 100px;height: 100px !important;margin-top: 23px;"
-              src="{{ $user->getFirstMediaUrl('logo') }}"
-              alt="user image"
-              class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" />
-          </div>
-          <div class="flex-grow-1 mt-3 mt-sm-5">
-            <div
-              class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
-              <div class="user-profile-info">
-                <h4>{{ $user->name }}</h4>
-                <ul
-                  class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
-                  <li class="list-inline-item d-flex gap-1">
-                    <i class="ti ti-color-swatch"></i> {{ $user->type }}
-                  </li>
-                  <li class="list-inline-item d-flex gap-1"><i class="ti ti-map-pin"></i> {{ $user->address }}</li>
-                  <li class="list-inline-item d-flex gap-1">
-                    <i class="ti ti-calendar"></i> Joined {{ $user->created_at->format('F Y') }}
-                  </li>
-                </ul>
-              </div>
-              <a href="javascript:void(0)" class="btn btn-primary">
-                <i class="ti ti-check me-1"></i>Connected
-              </a>
-            </div>
-          </div>
-        </div>
+      </div>
+
+      <div class="profile-actions">
+        <a class="btn btn-light" href="{{ route('admins.users.index') }}">
+          <i class="ti ti-users me-1"></i>{{ __('dashboard.users') }}
+        </a>
+        @unless($isEdit)
+          <a class="btn btn-primary" href="{{ route('admins.profile.edit') }}">
+            <i class="ti ti-edit me-1"></i>{{ __('app.account_settings') }}
+          </a>
+        @endunless
       </div>
     </div>
   </div>
-  <!--/ Header -->
 
-  <!-- Navbar pills -->
-  <div class="row">
-    <div class="col-md-12">
-      <ul class="nav nav-pills flex-column flex-sm-row mb-4">
-        <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('admins.profile.show') ? 'active' : '' }}" href="{{ route('admins.profile.show') }}">
-            <i class="ti-xs ti ti-user-check me-1"></i> Profile</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('admins.profile.edit') ? 'active' : '' }}" href="{{ route('admins.profile.edit') }}">
-            <i class="ti-xs ti ti-users me-1"></i> Account Settings</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <!--/ Navbar pills -->
+  <ul class="nav nav-pills flex-column flex-sm-row mb-4 gap-1">
+    <li class="nav-item">
+      <a class="nav-link {{ ! $isEdit ? 'active' : '' }}" href="{{ route('admins.profile.show') }}">
+        <i class="ti ti-user-check me-1"></i> {{ __('app.profile') }}
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{ $isEdit ? 'active' : '' }}" href="{{ route('admins.profile.edit') }}">
+        <i class="ti ti-settings me-1"></i> {{ __('app.account_settings') }}
+      </a>
+    </li>
+  </ul>
 
-  <!-- User Profile Content -->
-  @if (request()->routeIs('admins.profile.show'))
+  @if (! $isEdit)
     <div class="row">
-      <div class="col-xl-4 col-lg-5 col-md-5">
-        <!-- About User -->
-        <div class="card mb-4">
+      <div class="col-xl-4 col-lg-5 mb-4">
+        <div class="card profile-card mb-4">
           <div class="card-body">
-            <small class="card-text text-uppercase">About</small>
-            <ul class="list-unstyled mb-4 mt-3">
-              <li class="d-flex align-items-center mb-3">
-                <i class="ti ti-user text-heading"></i
-                ><span class="fw-medium mx-2 text-heading">Full Name:</span> <span>{{ \Illuminate\Support\Str::title($user->name) }}</span>
+            <div class="label-muted mb-3">{{ __('app.about') }}</div>
+            <ul class="list-unstyled profile-list mb-0">
+              <li>
+                <span class="ico"><i class="ti ti-user"></i></span>
+                <div>
+                  <div class="text-muted small">{{ __('app.full_name') }}</div>
+                  <div class="fw-medium">{{ \Illuminate\Support\Str::title($user->name) }}</div>
+                </div>
               </li>
-              <li class="d-flex align-items-center mb-3">
-                <i class="ti ti-check text-heading"></i
-                ><span class="fw-medium mx-2 text-heading">Status:</span> <span>{{ \Illuminate\Support\Str::title($user->status) }}</span>
+              <li>
+                <span class="ico"><i class="ti ti-shield-check"></i></span>
+                <div>
+                  <div class="text-muted small">{{ __('dashboard.status') }}</div>
+                  <div class="fw-medium">{{ \Illuminate\Support\Str::title($user->status ?? '—') }}</div>
+                </div>
               </li>
-              <li class="d-flex align-items-center mb-3">
-                <i class="ti ti-flag text-heading"></i
-                ><span class="fw-medium mx-2 text-heading">Country:</span> <span>{{ \Illuminate\Support\Str::title($user->address) }}</span>
-              </li>
-            </ul>
-            <small class="card-text text-uppercase">Contacts</small>
-            <ul class="list-unstyled mb-4 mt-3">
-              <li class="d-flex align-items-center mb-3">
-                <i class="ti ti-phone-call"></i><span class="fw-medium mx-2 text-heading">Contact:</span>
-                <span>{{ $user->phone }}</span>
-              </li>
-              <li class="d-flex align-items-center mb-3">
-                <i class="ti ti-mail"></i><span class="fw-medium mx-2 text-heading">Email:</span>
-                <span>{{ $user->email }}</span>
+              <li>
+                <span class="ico"><i class="ti ti-map-pin"></i></span>
+                <div>
+                  <div class="text-muted small">{{ __('cv.address') }}</div>
+                  <div class="fw-medium">{{ $user->address ?: '—' }}</div>
+                </div>
               </li>
             </ul>
           </div>
         </div>
-        <!--/ About User -->
-        <!-- Profile Overview -->
-        <div class="card mb-4">
+
+        <div class="card profile-card mb-4">
           <div class="card-body">
-            <p class="card-text text-uppercase">Overview</p>
-            <ul class="list-unstyled mb-0">
-              <li class="d-flex align-items-center mb-3">
-                <i class="ti ti-check"></i><span class="fw-medium mx-2">Users:</span>
-                <span>{{ $users_count }}</span>
+            <div class="label-muted mb-3">{{ __('app.contacts') }}</div>
+            <ul class="list-unstyled profile-list mb-0">
+              <li>
+                <span class="ico"><i class="ti ti-mail"></i></span>
+                <div>
+                  <div class="text-muted small">{{ __('cv.email') }}</div>
+                  <div class="fw-medium text-break">{{ $user->email }}</div>
+                </div>
+              </li>
+              <li>
+                <span class="ico"><i class="ti ti-phone"></i></span>
+                <div>
+                  <div class="text-muted small">{{ __('cv.phone') }}</div>
+                  <div class="fw-medium">{{ $user->phone ?: '—' }}</div>
+                </div>
               </li>
             </ul>
           </div>
         </div>
-        <!--/ Profile Overview -->
-      </div>
-      <div class="col-xl-8 col-lg-7 col-md-7">
-        <!-- Activity Timeline -->
-        <div class="card card-action mb-4">
-          <div class="card-header align-items-center">
-            <h5 class="card-action-title mb-0">Activity Timeline</h5>
-            <div class="card-action-element">
-              <div class="dropdown">
-                <button
-                  type="button"
-                  class="btn dropdown-toggle hide-arrow p-0"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  <i class="ti ti-dots-vertical text-muted"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="javascript:void(0);">Share timeline</a></li>
-                  <li><a class="dropdown-item" href="javascript:void(0);">Suggest edits</a></li>
-                  <li>
-                    <hr class="dropdown-divider" />
-                  </li>
-                  <li><a class="dropdown-item" href="javascript:void(0);">Report bug</a></li>
-                </ul>
+
+        <div class="card profile-card">
+          <div class="card-body">
+            <div class="label-muted mb-3">{{ __('app.overview') }}</div>
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="stat-pill">
+                  <strong>{{ $users_count }}</strong>
+                  <span class="text-muted small">{{ __('dashboard.clients') }}</span>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="stat-pill">
+                  <strong>{{ $activities->total() }}</strong>
+                  <span class="text-muted small">{{ __('app.activity') }}</span>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-8 col-lg-7 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">{{ __('app.activity') }}</h5>
           </div>
           <div class="card-body pb-0">
             <ul class="timeline ms-1 mb-0" id="activity-timeline">
@@ -144,140 +273,169 @@
             </ul>
             @if ($activities->hasMorePages())
               <div class="text-center my-3">
-                <button id="load-more-activities" 
-                        class="btn btn-outline-primary" 
-                        data-next-page="{{ $activities->currentPage() + 1 }}">
-                  Show More
+                <button id="load-more-activities" class="btn btn-outline-primary" data-next-page="{{ $activities->currentPage() + 1 }}">
+                  {{ __('app.show_more') }}
                 </button>
               </div>
             @endif
           </div>
         </div>
-        <!--/ Activity Timeline -->
+      </div>
     </div>
-  @elseif (request()->routeIs('admins.profile.edit'))
+  @else
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-12">
+        <div class="card profile-edit-card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-1">{{ __('app.profile_details') }}</h5>
+            <p class="mb-0 text-muted small">{{ __('dashboard.intros.admin_profile') }}</p>
+          </div>
 
-        <div class="card mb-4">
-          <h5 class="card-header">Profile Details</h5>
-          <form method="POST" action="{{ route('admins.profile.update') }}" enctype="multipart/form-data">
+          @if ($errors->any())
+            <div class="alert alert-danger mx-4 mt-4 mb-0">
+              <ul class="mb-0 ps-3">
+                @foreach ($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+
+          <form method="POST" action="{{ route('admins.profile.update') }}" enctype="multipart/form-data" id="profile-form">
             @csrf
-            <!-- Account -->
-            <div class="card-body">
-              <div class="d-flex align-items-start align-items-sm-center gap-4">
-                <img
-                  src="{{ $user->getFirstMediaUrl('logo') }}" style="margin-top: -37px"
-                  alt="user-avatar"
-                  class="d-block w-px-100 h-px-100 rounded"
-                  id="uploadedAvatar" />
-                <div class="button-wrapper">
-                  <label for="upload" class="btn btn-primary me-2 mb-3" tabindex="0">
-                    <span class="d-none d-sm-block">Upload new photo</span>
-                    <i class="ti ti-upload d-block d-sm-none"></i>
-                    <input
-                      name="logo"
-                      type="file"
-                      id="upload"
-                      class="account-file-input"
-                      hidden
-                      accept="image/png, image/jpeg" />
-                  </label>
-                  <button type="button" class="btn btn-label-secondary account-image-reset mb-3">
-                    <i class="ti ti-refresh-dot d-block d-sm-none"></i>
-                    <span class="d-none d-sm-block">Reset</span>
-                  </button>
 
-                  <div class="text-muted">Allowed JPG, JPEG or GIF. Max size of 2MB</div>
+            <div class="card-body">
+              <div class="profile-photo-panel">
+                @if($hasLogo)
+                  <img src="{{ $logoUrl }}" alt="{{ __('app.photo_preview') }}" id="uploadedAvatar">
+                @else
+                  <div class="profile-avatar-fallback" id="uploadedAvatarFallback">{{ $initials ?: 'AD' }}</div>
+                  <img src="" alt="{{ __('app.photo_preview') }}" id="uploadedAvatar" class="d-none">
+                @endif
+                <div>
+                  <label for="upload" class="btn btn-primary me-2 mb-2">
+                    <i class="ti ti-camera me-1"></i>
+                    <span>{{ $hasLogo ? __('app.change_photo') : __('app.upload_photo') }}</span>
+                    <input name="logo" type="file" id="upload" hidden accept="image/png,image/jpeg,image/jpg,image/webp,image/gif">
+                  </label>
+                  <button type="button" class="btn btn-label-secondary mb-2" id="reset-photo" @disabled(! $hasLogo)>
+                    {{ __('app.cancel') }}
+                  </button>
+                  <div class="text-muted small">{{ __('app.photo_hint') }}</div>
+                  @error('logo')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                  @enderror
                 </div>
               </div>
             </div>
-            <hr class="my-0" />
+
+            <hr class="my-0">
+
             <div class="card-body">
-              <div class="row">
-                <div class="mb-3 col-md-6">
-                  <label for="first_name" class="form-label">First Name</label>
-                  <input class="form-control @error('first_name') is-invalid @enderror" type="text" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}" placeholder="Enter first name" />
-                    @error('first_name')
-                        <div class="invalid-feedback text-sm">{{ $message }}</div>
-                    @enderror
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label for="first_name" class="form-label">{{ __('auth.name') }}</label>
+                  <input class="form-control @error('first_name') is-invalid @enderror" type="text" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}">
+                  @error('first_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
-                <div class="mb-3 col-md-6">
-                  <label for="second_name" class="form-label">Second Name</label>
-                  <input class="form-control @error('second_name') is-invalid @enderror" type="text" id="second_name" name="second_name" value="{{ old('second_name', $user->second_name) }}" placeholder="Enter second name" />
-                    @error('second_name')
-                        <div class="invalid-feedback text-sm">{{ $message }}</div>
-                    @enderror
+                <div class="col-md-4">
+                  <label for="second_name" class="form-label">{{ __('auth.second_name') }}</label>
+                  <input class="form-control @error('second_name') is-invalid @enderror" type="text" id="second_name" name="second_name" value="{{ old('second_name', $user->second_name) }}">
+                  @error('second_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
-                <div class="mb-3 col-md-6">
-                  <label for="third_name" class="form-label">Third Name</label>
-                  <input class="form-control @error('third_name') is-invalid @enderror" type="text" id="third_name" name="third_name" value="{{ old('third_name', $user->third_name) }}" placeholder="Enter third name" />
-                    @error('third_name')
-                        <div class="invalid-feedback text-sm">{{ $message }}</div>
-                    @enderror
+                <div class="col-md-4">
+                  <label for="third_name" class="form-label">{{ __('validation.attributes.third_name') }}</label>
+                  <input class="form-control @error('third_name') is-invalid @enderror" type="text" id="third_name" name="third_name" value="{{ old('third_name', $user->third_name) }}">
+                  @error('third_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
-                <div class="mb-3 col-md-6">
-                  <label for="email" class="form-label">Email</label>
-                  <input class="form-control @error('email') is-invalid @enderror" type="text" id="email" name="email" value="{{ old('email', $user->email) }}" placeholder="Enter email" />
-                    @error('email')
-                        <div class="invalid-feedback text-sm">{{ $message }}</div>
-                    @enderror
+                <div class="col-md-6">
+                  <label for="email" class="form-label">{{ __('cv.email') }}</label>
+                  <input class="form-control @error('email') is-invalid @enderror" type="email" id="email" name="email" value="{{ old('email', $user->email) }}">
+                  @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
-                <div class="mb-3 col-md-6">
-                  <label for="phone" class="form-label">Phone</label>
-                  <input class="form-control @error('phone') is-invalid @enderror" type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" placeholder="Enter phone" />
-                    @error('phone')
-                        <div class="invalid-feedback text-sm">{{ $message }}</div>
-                    @enderror
+                <div class="col-md-6">
+                  <label for="phone" class="form-label">{{ __('cv.phone') }}</label>
+                  <input class="form-control @error('phone') is-invalid @enderror" type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
+                  @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
-                <div class="mb-3 col-md-6">
-                  <label for="address" class="form-label">Address</label>
-                  <input class="form-control @error('address') is-invalid @enderror" type="text" id="address" name="address" value="{{ old('address', $user->address) }}" placeholder="Enter address" />
-                    @error('address')
-                        <div class="invalid-feedback text-sm">{{ $message }}</div>
-                    @enderror
+                <div class="col-12">
+                  <label for="address" class="form-label">{{ __('cv.address') }}</label>
+                  <input class="form-control @error('address') is-invalid @enderror" type="text" id="address" name="address" value="{{ old('address', $user->address) }}">
+                  @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
               </div>
             </div>
-            <div class="card-body">
-              <button type="submit" class="btn btn-primary me-2">Save changes</button>
-              <button type="reset" class="btn btn-label-secondary">Cancel</button>
+
+            <div class="card-footer bg-transparent border-top d-flex flex-wrap gap-2">
+              <button type="submit" class="btn btn-primary">{{ __('app.save_changes') }}</button>
+              <a href="{{ route('admins.profile.show') }}" class="btn btn-label-secondary">{{ __('app.cancel') }}</a>
             </div>
           </form>
-          <!-- /Account -->
         </div>
       </div>
     </div>
   @endif
-  
-  <!--/ User Profile Content -->
 </div>
 @endsection
 
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const loadMoreBtn = document.getElementById('load-more-activities');
-    if (!loadMoreBtn) return;
+  const fileInput = document.getElementById('upload');
+  const preview = document.getElementById('uploadedAvatar');
+  const fallback = document.getElementById('uploadedAvatarFallback');
+  const resetBtn = document.getElementById('reset-photo');
+  const originalSrc = preview && !preview.classList.contains('d-none') ? preview.src : '';
 
-    loadMoreBtn.addEventListener('click', function () {
-        let nextPage = this.dataset.nextPage;
-        let url = `{{ route('clients.profile.show') }}?page=${nextPage}`;
-
-        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('activity-timeline')
-                    .insertAdjacentHTML('beforeend', html);
-
-                // Update next page or remove button if no more
-                if (nextPage < {{ $activities->lastPage() }}) {
-                    this.dataset.nextPage = parseInt(nextPage) + 1;
-                } else {
-                    this.remove();
-                }
-            });
+  if (fileInput && preview) {
+    fileInput.addEventListener('change', function () {
+      const file = this.files && this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.classList.remove('d-none');
+        if (fallback) fallback.classList.add('d-none');
+        if (resetBtn) resetBtn.disabled = false;
+      };
+      reader.readAsDataURL(file);
     });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function () {
+      if (fileInput) fileInput.value = '';
+      if (originalSrc) {
+        preview.src = originalSrc;
+        preview.classList.remove('d-none');
+        if (fallback) fallback.classList.add('d-none');
+      } else {
+        preview.src = '';
+        preview.classList.add('d-none');
+        if (fallback) fallback.classList.remove('d-none');
+        resetBtn.disabled = true;
+      }
+    });
+  }
+
+  const loadMoreBtn = document.getElementById('load-more-activities');
+  if (!loadMoreBtn) return;
+
+  loadMoreBtn.addEventListener('click', function () {
+    const nextPage = this.dataset.nextPage;
+    fetch(`{{ route('admins.profile.show') }}?page=${nextPage}`, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('activity-timeline').insertAdjacentHTML('beforeend', html);
+        if (nextPage < {{ $activities->lastPage() }}) {
+          this.dataset.nextPage = parseInt(nextPage, 10) + 1;
+        } else {
+          this.remove();
+        }
+      });
+  });
 });
 </script>
 @endsection

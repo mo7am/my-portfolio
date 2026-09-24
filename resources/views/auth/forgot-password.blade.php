@@ -1,12 +1,11 @@
 @extends('auth.layouts.master')
 @section('title', __('auth.forgot'))
+@section('auth_tag', __('auth.forgot'))
 @section('content')
-<div class="mb-4">
-    <p class="mb-0">{{ __('auth.forgot_intro') }}</p>
-</div>
+<p class="auth-intro">{{ __('auth.forgot_intro') }}</p>
 
 @if (session('status'))
-    <div class="mb-4 custom-success">
+    <div class="mb-4" style="color:#16a34a;font-weight:600;text-align:center;font-size:0.92rem;">
         {{ session('status') }}
     </div>
 @endif
@@ -21,9 +20,9 @@
         @enderror
     </div>
 
-    <button type="submit" class="btn btn-primary d-grid w-100 mb-3">{{ __('auth.send_reset_link') }}</button>
+    <button type="submit" class="btn btn-primary auth-submit">{{ __('auth.send_reset_link') }}</button>
 
-    <p class="text-center mb-0">
+    <p class="auth-footer-note">
         <a href="{{ route('login') }}">{{ __('auth.login') }}</a>
     </p>
 </form>

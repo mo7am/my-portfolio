@@ -69,6 +69,15 @@ return [
             'throw' => false,
             'report' => false,
         ],
+
+        'landing' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/landing'),
+            'url' => '/storage/landing',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
     ],
 
     /*

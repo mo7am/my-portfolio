@@ -1,7 +1,12 @@
 <?php
 
-use App\Enums\UserType;
+use App\Enums\LandingItemType;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\Landing\FaqController as LandingFaqController;
+use App\Http\Controllers\Admin\Landing\ItemController as LandingItemController;
+use App\Http\Controllers\Admin\Landing\PlanController as LandingPlanController;
+use App\Http\Controllers\Admin\Landing\SettingController as LandingSettingController;
+use App\Http\Controllers\Admin\Landing\TestimonialController as LandingTestimonialController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Client\AwardController;
 use App\Http\Controllers\Client\CertificationController;
@@ -20,6 +25,7 @@ use App\Http\Controllers\Client\VolunteeringController;
 use App\Http\Controllers\Client\WebsiteController;
 use App\Http\Controllers\ContentLocaleController;
 use App\Http\Controllers\DriveOAuthController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Resume\ContactController;
@@ -37,17 +43,7 @@ Route::get('/content-locale/{locale}', ContentLocaleController::class)->name('co
 Route::get('/drive/oauth/redirect', [DriveOAuthController::class, 'redirect'])->name('drive.oauth.redirect');
 Route::get('/drive/oauth/callback', [DriveOAuthController::class, 'callback'])->name('drive.oauth.callback');
 
-Route::get('/', function () {
-    if (auth('sanctum')->check()) {
-        if (auth('sanctum')->user()->type === UserType::ADMIN->value) {
-            return redirect()->route('admins.index');
-        } elseif (auth('sanctum')->user()->type === UserType::CLIENT->value) {
-            return redirect()->route('clients.index');
-        }
-    }
-
-    return redirect()->route('login');
-});
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 Route::middleware(['auth:sanctum', AttachTenantHeader::class])->group(function () {
     Route::middleware('admin')->prefix('admin')->as('admins.')->group(function () {
@@ -61,6 +57,26 @@ Route::middleware(['auth:sanctum', AttachTenantHeader::class])->group(function (
 
         Route::resource('users', UserController::class)->except(['show']);
 
+        Route::prefix('landing')->as('landing.')->group(function () {
+            Route::get('settings', [LandingSettingController::class, 'edit'])->name('settings.edit');
+            Route::put('settings', [LandingSettingController::class, 'update'])->name('settings.update');
+
+            Route::resource('faqs', LandingFaqController::class)->except(['show']);
+            Route::resource('testimonials', LandingTestimonialController::class)->except(['show']);
+            Route::resource('plans', LandingPlanController::class)->except(['show']);
+
+            Route::prefix('items/{type}')
+                ->as('items.')
+                ->whereIn('type', LandingItemType::values())
+                ->group(function () {
+                    Route::get('/', [LandingItemController::class, 'index'])->name('index');
+                    Route::get('/create', [LandingItemController::class, 'create'])->name('create');
+                    Route::post('/', [LandingItemController::class, 'store'])->name('store');
+                    Route::get('/{item}/edit', [LandingItemController::class, 'edit'])->name('edit');
+                    Route::put('/{item}', [LandingItemController::class, 'update'])->name('update');
+                    Route::delete('/{item}', [LandingItemController::class, 'destroy'])->name('destroy');
+                });
+        });
     });
 
     Route::middleware('client', InitializeTenancyMiddleware::class)->prefix('client')->as('clients.')->group(function () {

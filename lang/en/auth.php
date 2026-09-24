@@ -23,4 +23,7 @@ return [
     'sign_in' => 'Sign in',
     'sign_up' => 'Sign up',
     'or' => 'or',
+    'back_home' => 'Back to home',
+    'login_tag' => 'Sign in to continue',
+    'register_tag' => 'Create your portfolio account',
 ];

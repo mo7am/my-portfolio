@@ -1,33 +1,33 @@
 @extends('layout.master')
 
-@section('title', 'Users')
-
-@section('styles')
-@endsection
+@section('title', __('dashboard.users'))
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="py-3 mb-4"><span class="text-muted fw-light">Users </span></h4>
+    @include('partials.page-intro', [
+      'title' => __('dashboard.users'),
+      'description' => __('dashboard.intros.users'),
+    ])
 
-    <!-- DataTable with Buttons -->
     <div class="card">
       <div class="card-datatable table-responsive pt-0">
         <table class="datatables-basic table" id="user_table">
           <thead>
             <tr>
-              <th>Logo</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Portfolio</th>
-              <th>Joined At</th>
-              <th>Action</th>
+              <th>{{ __('app.photo_preview') }}</th>
+              <th>{{ __('auth.name') }}</th>
+              <th>{{ __('auth.email') }}</th>
+              <th>{{ __('cv.phone') }}</th>
+              <th>{{ __('cv.address') }}</th>
+              <th>{{ __('dashboard.portfolio_link') }}</th>
+              <th>{{ __('app.joined') }}</th>
+              <th>{{ __('app.actions') }}</th>
             </tr>
           </thead>
         </table>
       </div>
     </div>
+</div>
 @endsection
 
 @section('scripts')

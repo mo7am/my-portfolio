@@ -1,8 +1,9 @@
 @extends('auth.layouts.master')
 @section('title', __('auth.register'))
+@section('auth_tag', __('auth.register_tag'))
 @section('content')
-<p class="mb-4">{{ __('auth.sign_up_title') }}</p>
-<form id="formAuthentication1" class="mb-3" method="POST" action="{{ route('register') }}">
+<p class="auth-intro">{{ __('auth.sign_up_title') }}</p>
+<form id="formAuthentication1" class="mb-0" method="POST" action="{{ route('register') }}">
     @csrf
 
     <div class="mb-3">
@@ -30,10 +31,10 @@
         <label class="form-label" for="password">{{ __('auth.password_label') }}</label>
         <div class="input-group input-group-merge">
             <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" autocomplete="new-password" />
+            <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
             @error('password')
                 <div class="invalid-feedback text-sm">{{ $message }}</div>
             @enderror
-            <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
         </div>
     </div>
     <div class="mb-3 form-password-toggle">
@@ -44,9 +45,9 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary d-grid w-100 mb-3">{{ __('auth.sign_up') }}</button>
+    <button type="submit" class="btn btn-primary auth-submit mb-1">{{ __('auth.sign_up') }}</button>
 
-    <p class="text-center mb-0">
+    <p class="auth-footer-note">
         <span>{{ __('auth.already_registered') }}</span>
         <a href="{{ route('login') }}">{{ __('auth.login') }}</a>
     </p>

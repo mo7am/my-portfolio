@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
             'first_name' => ['required', 'string', 'max:255'],
             'second_name' => ['required', 'string', 'max:255'],
             'third_name' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->route('user'))],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->route('user') ?? auth('sanctum')->id())],
             'phone' => ['sometimes', 'nullable', 'string', 'max:255'],
             'address' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
