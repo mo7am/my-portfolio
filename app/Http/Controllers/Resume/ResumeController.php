@@ -17,7 +17,13 @@ use App\Libraries\SkillLibrary;
 use App\Libraries\UserLibrary;
 use App\Libraries\VolunteeringLibrary;
 use App\Libraries\WebsiteLibrary;
+use App\Models\User;
+use App\Services\GoogleDriveCvService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Throwable;
 
 class ResumeController extends Controller
 {
@@ -36,6 +42,7 @@ class ResumeController extends Controller
         protected readonly AwardLibrary $awardLibrary,
         protected readonly VolunteeringLibrary $volunteeringLibrary,
         protected readonly CvReferenceLibrary $referenceLibrary,
+        protected readonly GoogleDriveCvService $googleDriveCvService,
     ) {}
 
     public function index()
@@ -54,16 +61,74 @@ class ResumeController extends Controller
         $references = tenant()->is_show_reference
             ? $this->referenceLibrary->all()->where('is_public', true)->values()
             : collect();
+        $driveConfigured = $this->googleDriveCvService->isConfigured();
 
         return view('resume.resume', compact(
             'user', 'experiences', 'educationals', 'languages', 'skills', 'websites',
-            'projects', 'certifications', 'courses', 'awards', 'volunteerings', 'references'
+            'projects', 'certifications', 'courses', 'awards', 'volunteerings', 'references',
+            'driveConfigured'
         ));
     }
 
     public function download()
     {
         $user = tenant()->user;
+        $pdf = $this->makePdf($user);
+        $fileName = $this->cvFileName($user);
+
+        return $pdf->download($fileName);
+    }
+
+    public function shareToDrive(): JsonResponse
+    {
+        /** @var User $user */
+        $user = tenant()->user;
+
+        if (! $this->googleDriveCvService->isConfigured()) {
+            return response()->json([
+                'success' => false,
+                'message' => __('app.drive_not_configured'),
+            ], 503);
+        }
+
+        try {
+            $pdfBinary = $this->makePdf($user)->output();
+            $fileName = $this->cvFileName($user);
+
+            $result = $this->googleDriveCvService->uploadCvPdf(
+                $pdfBinary,
+                $fileName,
+                $user->cv_drive_file_id
+            );
+
+            $user->forceFill([
+                'cv_drive_file_id' => $result['file_id'],
+                'cv_drive_link' => $result['link'],
+            ])->save();
+
+            return response()->json([
+                'success' => true,
+                'link' => $result['link'],
+                'message' => __('app.drive_upload_success'),
+            ]);
+        } catch (Throwable $e) {
+            Log::error('Google Drive CV upload failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => str_contains($e->getMessage(), 'Service accounts cannot store')
+                    || str_contains($e->getMessage(), 'storageQuotaExceeded')
+                    ? __('app.drive_quota_error')
+                    : __('app.drive_upload_failed'),
+            ], 500);
+        }
+    }
+
+    protected function makePdf(User $user)
+    {
         $media = $user->getFirstMedia('logo');
 
         if ($media && is_file($media->getPath())) {
@@ -91,7 +156,7 @@ class ResumeController extends Controller
 
         $defaultFont = app()->getLocale() === 'ar' ? 'DejaVu Sans' : 'sans-serif';
 
-        $pdfContent = Pdf::loadView('resume.pdf', compact(
+        return Pdf::loadView('resume.pdf', compact(
             'user', 'experiences', 'educationals', 'languages', 'skills', 'logoData', 'logoType',
             'projects', 'projectGroups', 'links', 'websites', 'certifications', 'courses',
             'awards', 'volunteerings', 'references'
@@ -103,7 +168,13 @@ class ResumeController extends Controller
                 'isRemoteEnabled' => true,
                 'isPhpEnabled' => true,
             ]);
+    }
 
-        return $pdfContent->download($user->first_name.'-'.$user->second_name.'-Resume.pdf');
+    protected function cvFileName(User $user): string
+    {
+        $base = trim(($user->first_name ?? '').'-'.($user->second_name ?? '').'-Resume');
+        $base = Str::slug($base) ?: 'resume';
+
+        return $base.'.pdf';
     }
 }

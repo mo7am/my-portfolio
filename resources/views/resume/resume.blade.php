@@ -257,9 +257,147 @@
 
   @if (tenant()->is_show_download_cv)
     <section class="resume-section resume-download" data-aos="fade-up">
-      <a class="btn primary" href="{{ route('portfolio.download', ['domain' => tenant()->user->domain]) }}">
-        <i class="bi bi-download"></i> {{ __('app.download_cv') }}
-      </a>
+      <div class="resume-download__actions">
+        <a class="btn primary" href="{{ route('portfolio.download', ['domain' => tenant()->user->domain]) }}">
+          <i class="bi bi-download"></i> {{ __('app.download_cv') }}
+        </a>
+
+        @if ($driveConfigured ?? false)
+          <button
+            type="button"
+            class="btn"
+            id="shareDriveBtn"
+            data-url="{{ route('portfolio.share-drive', ['domain' => tenant()->user->domain]) }}"
+          >
+            <i class="bi bi-google"></i>
+            <span class="share-drive-label">{{ __('app.share_drive') }}</span>
+          </button>
+        @endif
+      </div>
+
+      <div class="drive-link-box {{ $user->cv_drive_link ? '' : 'is-empty' }}" id="driveLinkBox" @if(!($driveConfigured ?? false) && !$user->cv_drive_link) hidden @endif>
+        <label class="drive-link-label" for="driveLinkInput">{{ __('app.drive_link_label') }}</label>
+        <div class="drive-link-row">
+          <input
+            type="url"
+            id="driveLinkInput"
+            class="drive-link-input"
+            readonly
+            value="{{ $user->cv_drive_link }}"
+            placeholder="{{ __('app.drive_link_placeholder') }}"
+          >
+          <button type="button" class="btn" id="copyDriveLinkBtn" @disabled(! $user->cv_drive_link) title="{{ __('app.copy_link') }}">
+            <i class="bi bi-clipboard"></i> {{ __('app.copy_link') }}
+          </button>
+          <a
+            class="btn primary"
+            id="openDriveLinkBtn"
+            href="{{ $user->cv_drive_link ?: '#' }}"
+            target="_blank"
+            rel="noopener"
+            @if(! $user->cv_drive_link) hidden @endif
+          >
+            <i class="bi bi-box-arrow-up-right"></i> {{ __('app.open_link') }}
+          </a>
+        </div>
+        <p class="drive-link-status" id="driveLinkStatus" aria-live="polite"></p>
+      </div>
+
+      @if ($driveConfigured ?? false)
+        <script>
+          (function () {
+            var btn = document.getElementById('shareDriveBtn');
+            var input = document.getElementById('driveLinkInput');
+            var box = document.getElementById('driveLinkBox');
+            var statusEl = document.getElementById('driveLinkStatus');
+            var copyBtn = document.getElementById('copyDriveLinkBtn');
+            var openBtn = document.getElementById('openDriveLinkBtn');
+            if (!btn || !input) return;
+
+            var label = btn.querySelector('.share-drive-label');
+            var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+            var csrf = csrfMeta ? csrfMeta.getAttribute('content') : '';
+            var msgUploading = @json(__('app.drive_uploading'));
+            var msgShare = @json(__('app.share_drive'));
+            var msgFail = @json(__('app.drive_upload_failed'));
+            var msgOk = @json(__('app.drive_upload_success'));
+            var msgCopied = @json(__('app.link_copied'));
+
+            function setBusy(busy) {
+              btn.disabled = !!busy;
+              if (label) label.textContent = busy ? msgUploading : msgShare;
+            }
+
+            function showLink(link, message) {
+              box.hidden = false;
+              box.classList.remove('is-empty');
+              input.value = link;
+              copyBtn.disabled = false;
+              openBtn.hidden = false;
+              openBtn.href = link;
+              if (statusEl) statusEl.textContent = message || '';
+            }
+
+            btn.addEventListener('click', function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              setBusy(true);
+              if (statusEl) statusEl.textContent = msgUploading;
+
+              var headers = {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+              };
+              if (csrf) headers['X-CSRF-TOKEN'] = csrf;
+
+              fetch(btn.getAttribute('data-url'), {
+                method: 'POST',
+                headers: headers,
+                credentials: 'same-origin'
+              })
+                .then(function (res) {
+                  return res.json().then(function (data) {
+                    return { ok: res.ok, data: data };
+                  }).catch(function () {
+                    return { ok: false, data: {} };
+                  });
+                })
+                .then(function (result) {
+                  if (!result.ok || !result.data.success) {
+                    throw new Error((result.data && result.data.message) || msgFail);
+                  }
+                  showLink(result.data.link, result.data.message || msgOk);
+                })
+                .catch(function (err) {
+                  if (statusEl) statusEl.textContent = (err && err.message) ? err.message : msgFail;
+                })
+                .finally(function () {
+                  setBusy(false);
+                });
+            });
+
+            if (copyBtn) {
+              copyBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (!input.value) return;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                  navigator.clipboard.writeText(input.value).then(function () {
+                    if (statusEl) statusEl.textContent = msgCopied;
+                  }).catch(function () {
+                    input.select();
+                    document.execCommand('copy');
+                    if (statusEl) statusEl.textContent = msgCopied;
+                  });
+                } else {
+                  input.select();
+                  document.execCommand('copy');
+                  if (statusEl) statusEl.textContent = msgCopied;
+                }
+              });
+            }
+          })();
+        </script>
+      @endif
     </section>
   @endif
 </div>

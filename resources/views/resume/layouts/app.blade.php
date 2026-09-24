@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script>
       (function () {
         try {
@@ -292,5 +293,6 @@
         PortfolioToast.fire({ icon: 'error', title: @json($errors->first()) });
       @endif
     </script>
+    @yield('scripts')
   </body>
 </html>

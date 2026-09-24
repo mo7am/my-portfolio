@@ -19,6 +19,7 @@ use App\Http\Controllers\Client\TenantController;
 use App\Http\Controllers\Client\VolunteeringController;
 use App\Http\Controllers\Client\WebsiteController;
 use App\Http\Controllers\ContentLocaleController;
+use App\Http\Controllers\DriveOAuthController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Resume\ContactController;
@@ -32,6 +33,9 @@ require __DIR__.'/auth.php';
 
 Route::get('/locale/{locale}', LocaleController::class)->name('locale.switch');
 Route::get('/content-locale/{locale}', ContentLocaleController::class)->name('content-locale.switch');
+
+Route::get('/drive/oauth/redirect', [DriveOAuthController::class, 'redirect'])->name('drive.oauth.redirect');
+Route::get('/drive/oauth/callback', [DriveOAuthController::class, 'callback'])->name('drive.oauth.callback');
 
 Route::get('/', function () {
     if (auth('sanctum')->check()) {
@@ -104,5 +108,10 @@ Route::middleware([AttachTenantHeader::class, InitializeTenancyMiddleware::class
         Route::get('{domain}/contact', [ContactController::class, 'contact'])->name('contact');
         Route::post('{domain}/store', [ContactController::class, 'store'])->name('contacts.store');
         Route::get('{domain}/download-pdf', [ResumeController::class, 'download'])->name('download');
+        Route::post('{domain}/share-drive', [ResumeController::class, 'shareToDrive'])
+            ->middleware('throttle:5,1')
+            ->name('share-drive');
     });
 });
+
+

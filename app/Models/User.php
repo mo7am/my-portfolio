@@ -52,6 +52,8 @@ class User extends Authenticatable implements HasMedia
         'domain',
         'job_title',
         'job_description',
+        'cv_drive_link',
+        'cv_drive_file_id',
         'type',
         'status',
     ];

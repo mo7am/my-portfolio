@@ -1063,8 +1063,59 @@ textarea:focus-visible {
 
 .resume-download {
   display: flex;
-  justify-content: flex-start;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
   margin-top: 0.5rem;
+}
+
+.resume-download__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.drive-link-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.drive-link-box.is-empty:not([hidden]) .drive-link-row {
+  opacity: 0.85;
+}
+
+.drive-link-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.drive-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.drive-link-input {
+  flex: 1 1 220px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.drive-link-status {
+  margin: 0;
+  min-height: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 /* ---- Contact ---- */
@@ -1436,7 +1487,7 @@ textarea:focus-visible {
 
   .project-actions .btn,
   .contact-form .btn,
-  .resume-download .btn,
+  .resume-download__actions .btn,
   .cta .btn {
     width: 100%;
   }

@@ -35,4 +35,18 @@ return [
         ],
     ],
 
+    'google_drive' => [
+        // Preferred for personal Gmail: OAuth user credentials (has storage quota).
+        'client_id' => env('GOOGLE_DRIVE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_DRIVE_CLIENT_SECRET'),
+        'refresh_token' => env('GOOGLE_DRIVE_REFRESH_TOKEN'),
+        'redirect_uri' => env('GOOGLE_DRIVE_REDIRECT_URI', env('APP_URL').'/drive/oauth/callback'),
+
+        // Alternative for Google Workspace Shared Drives only (service accounts have no My Drive quota).
+        'credentials' => env('GOOGLE_DRIVE_CREDENTIALS'),
+
+        // Optional Drive folder ID where CV PDFs are stored.
+        'folder_id' => env('GOOGLE_DRIVE_FOLDER_ID'),
+    ],
+
 ];
