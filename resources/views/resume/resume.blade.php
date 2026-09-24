@@ -262,6 +262,15 @@
           <i class="bi bi-download"></i> {{ __('app.download_cv') }}
         </a>
 
+        <a
+          class="btn"
+          href="{{ route('portfolio.view-pdf', ['domain' => tenant()->user->domain]) }}"
+          target="_blank"
+          rel="noopener"
+        >
+          <i class="bi bi-file-earmark-pdf"></i> {{ __('app.view_cv') }}
+        </a>
+
         @if ($driveConfigured ?? false)
           <button
             type="button"
@@ -273,6 +282,30 @@
             <span class="share-drive-label">{{ __('app.share_drive') }}</span>
           </button>
         @endif
+      </div>
+
+      <div class="drive-link-box" id="sitePdfLinkBox">
+        <label class="drive-link-label" for="sitePdfLinkInput">{{ __('app.site_pdf_link_label') }}</label>
+        <div class="drive-link-row">
+          <input
+            type="url"
+            id="sitePdfLinkInput"
+            class="drive-link-input"
+            readonly
+            value="{{ route('portfolio.view-pdf', ['domain' => tenant()->user->domain]) }}"
+          >
+          <button type="button" class="btn" id="copySitePdfLinkBtn" title="{{ __('app.copy_link') }}">
+            <i class="bi bi-clipboard"></i> {{ __('app.copy_link') }}
+          </button>
+          <a
+            class="btn primary"
+            href="{{ route('portfolio.view-pdf', ['domain' => tenant()->user->domain]) }}"
+            target="_blank"
+            rel="noopener"
+          >
+            <i class="bi bi-eye"></i> {{ __('app.view_cv') }}
+          </a>
+        </div>
       </div>
 
       <div class="drive-link-box {{ $user->cv_drive_link ? '' : 'is-empty' }}" id="driveLinkBox" @if(!($driveConfigured ?? false) && !$user->cv_drive_link) hidden @endif>
@@ -398,6 +431,31 @@
           })();
         </script>
       @endif
+
+      <script>
+        (function () {
+          var input = document.getElementById('sitePdfLinkInput');
+          var copyBtn = document.getElementById('copySitePdfLinkBtn');
+          if (!input || !copyBtn) return;
+          var msgCopied = @json(__('app.link_copied'));
+
+          copyBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (!input.value) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(input.value).then(function () {
+                copyBtn.textContent = msgCopied;
+              }).catch(function () {
+                input.select();
+                document.execCommand('copy');
+              });
+            } else {
+              input.select();
+              document.execCommand('copy');
+            }
+          });
+        })();
+      </script>
     </section>
   @endif
 </div>

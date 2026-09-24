@@ -79,6 +79,15 @@ class ResumeController extends Controller
         return $pdf->download($fileName);
     }
 
+    public function viewPdf()
+    {
+        $user = tenant()->user;
+        $pdf = $this->makePdf($user);
+        $fileName = $this->cvFileName($user);
+
+        return $pdf->stream($fileName);
+    }
+
     public function shareToDrive(): JsonResponse
     {
         /** @var User $user */

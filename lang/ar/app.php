@@ -29,6 +29,8 @@ return [
     'view_all' => 'عرض الكل',
     'read_more' => 'المزيد',
     'download_cv' => 'تحميل السيرة الذاتية PDF',
+    'view_cv' => 'عرض السيرة الذاتية PDF',
+    'site_pdf_link_label' => 'رابط السيرة على الموقع',
     'send_message' => 'إرسال الرسالة',
     'create_account' => 'إنشاء حساب',
     'new_on_platform' => 'ليس لديك حساب؟',

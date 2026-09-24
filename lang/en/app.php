@@ -29,6 +29,8 @@ return [
     'view_all' => 'View all',
     'read_more' => 'Read more',
     'download_cv' => 'Download full CV (PDF)',
+    'view_cv' => 'View CV (PDF)',
+    'site_pdf_link_label' => 'Website PDF link',
     'send_message' => 'Send message',
     'create_account' => 'Create one',
     'new_on_platform' => 'New on our platform?',

@@ -108,6 +108,7 @@ Route::middleware([AttachTenantHeader::class, InitializeTenancyMiddleware::class
         Route::get('{domain}/contact', [ContactController::class, 'contact'])->name('contact');
         Route::post('{domain}/store', [ContactController::class, 'store'])->name('contacts.store');
         Route::get('{domain}/download-pdf', [ResumeController::class, 'download'])->name('download');
+        Route::get('{domain}/cv.pdf', [ResumeController::class, 'viewPdf'])->name('view-pdf');
         Route::post('{domain}/share-drive', [ResumeController::class, 'shareToDrive'])
             ->middleware('throttle:5,1')
             ->name('share-drive');
